@@ -9,6 +9,18 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.13',
+    date: '2026-07-26',
+    sections: [
+      {
+        title: 'Internal — repository maintenance',
+        items: [
+          'Repository housekeeping only. No functional, data, or interface changes — SPERT AHP behaves identically to the previous release. A file describing how Firestore security rules are deployed was removed from the source repository; those rules live in the Firebase Console and are unchanged, and the file was never part of the app you run.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.11',
     date: '2026-06-26',
     sections: [

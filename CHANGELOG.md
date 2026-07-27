@@ -1,5 +1,11 @@
 # SPERT® AHP — Changelog
 
+## v0.18.13 (July 26, 2026)
+
+Repository maintenance — removes this repository's local copy of `firestore.rules`. Firestore security rules are deployed from the Firebase Console and mirrored in the SPERT® Suite landing-page repository, which is their single source of truth; the copy kept here was never deployed from and could only drift out of date. It was never bundled into the app, so cloud behaviour is unchanged. Also resynchronises `package-lock.json`, which had been left at 0.18.11 while `package.json` read 0.18.12 — both now read 0.18.13. No functional, data, or interface changes. Build clean, all 347 tests pass.
+
+> Note: v0.18.12 shipped without a changelog entry; this entry does not attempt to reconstruct it.
+
 ## v0.18.11 (June 26, 2026)
 
 Tooling — upgrade ESLint to 10.2.1, matching the suite standard (SPERT Story Map). ESLint 10 requires Node ≥20.19 / 22.13 / 24, which the v0.18.10 Node 24 adoption unlocked. Bumps `eslint` 9.39.4 → 10.2.1, `@eslint/js` → 10.0.1, `eslint-plugin-react-hooks` → 7.1.1 (adds the ESLint 10 peer), and `globals` → 17.5.0; `typescript-eslint` stays pinned at 8.62.0 for TypeScript 6. The stricter react-hooks 7.1.1 `recommended` set surfaced pre-existing patterns as warnings (11 → 23) — the gate fails on errors only, so all remain non-blocking. Build clean, all 347 tests pass.
