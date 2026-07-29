@@ -9,6 +9,19 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.14',
+    date: '2026-07-29',
+    sections: [
+      {
+        title: 'Fixed \u2014 collaborators showed an internal account ID',
+        items: [
+          'When someone was added to a model through an emailed invitation, the collaborator list could show a short string of random-looking characters instead of their name. This happened whenever that person had used another SPERT\u00ae Suite app but had never personally signed into SPERT AHP.',
+          'The collaborator list now falls back to the shared suite-wide profile, so the name or email address appears immediately \u2014 including for collaborators added before this release. Nothing needs to be re-invited and no action is required.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.13',
     date: '2026-07-26',
     sections: [

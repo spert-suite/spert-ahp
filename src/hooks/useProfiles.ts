@@ -37,7 +37,17 @@ export function useProfiles(userIds: string[]): Record<string, ProfileInfo> {
             return;
           }
           try {
-            const snap = await getDoc(doc(db!, 'spertahp_profiles', uid));
+            let snap = await getDoc(doc(db!, 'spertahp_profiles', uid));
+            if (!snap.exists()) {
+              // Fall back to the suite-wide mirror. spertahp_profiles is
+              // written on THIS app's sign-in, but the cross-app invitation
+              // Cloud Function resolves an invitee BY their spertsuite_profiles
+              // doc and then writes only members.{uid} — it never seeds a
+              // per-app profile. A collaborator who has used another SPERT app
+              // but never opened AHP therefore has no spertahp_profiles doc,
+              // and SharingSection falls through to a truncated raw Auth UID.
+              snap = await getDoc(doc(db!, 'spertsuite_profiles', uid));
+            }
             if (snap.exists()) {
               const data = snap.data() as { displayName?: string; email?: string };
               map[uid] = {
