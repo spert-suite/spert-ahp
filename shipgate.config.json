@@ -1,0 +1,31 @@
+{
+  "repo": "spert-ahp",
+
+  "_versionConstant": "Deliberately absent. This repo has no displayed APP_VERSION — AboutPage and ChangelogPage both render CHANGELOG[0].version from src/components/shell/changelogData.ts, so the changelog entry IS the version bump. That surface is tied to CHANGELOG.md by changelog-surfaces.test.ts, and CHANGELOG.md is tied to package.json below, so the displayed version is covered transitively.",
+
+  "extraVersionSurfaces": [
+    {
+      "file": "src/core/models/constants.ts",
+      "export": "APP_VERSION",
+      "note": "Not displayed anywhere. It is stamped into every exported model as `appVersion` by exportModel.ts and exportAllModels.ts, so it is the provenance stamp on user data. It sat at 0.12.1 while the app shipped 0.18.15 — six minor versions of exports carried a wrong stamp before v0.18.16 caught it."
+    }
+  ],
+
+  "changelog": {
+    "file": "CHANGELOG.md",
+    "headingPattern": "^## v([\\d.]+)\\s*\\("
+  },
+
+  "claudeMdVersionPatterns": [],
+
+  "commands": [
+    {
+      "name": "lint",
+      "run": "npm run lint",
+      "expectProblems": 23,
+      "_note": "23 warnings, 0 errors — eslint exits 0 here, so gating on the exit code would let new warnings in silently. Hold the number steady instead."
+    },
+    { "name": "test", "run": "npm test" },
+    { "name": "build (tsc -b && vite build)", "run": "npm run build" }
+  ]
+}

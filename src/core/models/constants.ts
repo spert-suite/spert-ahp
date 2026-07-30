@@ -12,7 +12,9 @@ export const RAS_MAX_ITERATIONS = 1000;
 export const EIGENVECTOR_TOLERANCE = 1e-8;
 export const EIGENVECTOR_MAX_ITER = 1000;
 export const CURRENT_SCHEMA_VERSION = 1;
-export const APP_VERSION = '0.12.1';
+// Stamped into every exported model as `appVersion` (exportModel, exportAllModels).
+// Must equal package.json's version — `npm run shipgate` enforces it.
+export const APP_VERSION = '0.18.16';
 export const VOTER_SOFT_LIMIT = 30;
 export const VOTER_HARD_LIMIT = 50;
 export const PAIR_COVERAGE_WARNING = 0.70;
