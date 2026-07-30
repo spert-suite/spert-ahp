@@ -175,8 +175,9 @@ describe('E2E: component smoke tests', () => {
     expect(typeof mod.default).toBe('function');
   });
 
-  it('CHANGELOG.md exists', () => {
-    // Verified by build — file exists at project root
-    expect(true).toBe(true);
-  });
+  // `CHANGELOG.md exists` used to live here as `expect(true).toBe(true)` with a
+  // comment claiming the build verified it. Nothing verified it: the build never
+  // reads that file, so the test asserted nothing while looking like a guard.
+  // Real assertions on the changelog — that it exists, and that it agrees with
+  // what the app renders — are in `changelog-surfaces.test.ts`.
 });

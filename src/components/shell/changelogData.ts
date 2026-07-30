@@ -9,6 +9,33 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.16',
+    date: '2026-07-29',
+    sections: [
+      {
+        title: 'Fixed — exported decisions recorded the wrong app version',
+        items: [
+          'Every decision you export carries a note of which version of SPERT AHP produced it. That note had been stuck at 0.12.1 since early May, so exports made over the last few months name a much older release than the one that actually created them.',
+          'Nothing inside the exported decision was affected — the criteria, alternatives, judgements and results were always correct and always imported correctly. Only the version note was wrong.',
+          'Exports made from this release onward record the correct version. Files you exported earlier cannot be corrected after the fact; if the version note matters for a record you keep, re-export the decision.',
+        ],
+      },
+      {
+        title: 'Fixed — a release was missing from the changelog file',
+        items: [
+          'Version 0.13.0 appeared in this in-app changelog but had never been added to the changelog file kept in the code repository, which skipped straight from 0.13.1 to 0.12.2. The missing entry has been restored, and the two are now checked against each other automatically.',
+        ],
+      },
+      {
+        title: 'Internal — release checks',
+        items: [
+          'Added an automated release gate that runs the full test suite, the linter and a production build before anything ships, and checks that every place the version number appears agrees with every other place. It runs both on demand and automatically on every proposed change.',
+          'This is what found the export version problem above.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.15',
     date: '2026-07-29',
     sections: [
