@@ -1,5 +1,16 @@
 # SPERT® AHP — Changelog
 
+## v0.18.17 (July 31, 2026)
+
+Tooling only — no functional, data, or interface changes to the app itself. It behaves identically to v0.18.16.
+
+The ship gate added in v0.18.16 was told to run on "Node 24", written directly into the workflow file. That is not the same as the version this repository pins: it resolves to whichever 24.x release the runner happens to have, and the `.nvmrc` kept alongside the source was never consulted. The workflow now reads that file via `node-version-file`, so the version is stated in exactly one place instead of two that were free to drift apart — the same class of duplication that let `APP_VERSION` sit six minor versions stale until v0.18.16 caught it.
+
+The version actually selected here is unchanged, because this `.nvmrc` names the `24` line rather than an exact release; that line-level pin is deliberate, so each build takes the newest secure patch. What changes is that `spert-admin-tool`, which caps at `24.15.x - 24.17.x` on purpose to avoid a Node ≥24.18 regression that breaks server-rendered pages, will have that cap honoured when it gains the same gate rather than silently overridden.
+
+### Changed
+- **CI resolves Node from `.nvmrc` rather than a hardcoded major.** `shipgate.yml` stays byte-identical across all nine suite repositories — `setup-node` resolves the path per repository, so no per-repo divergence was needed.
+
 ## v0.18.16 (July 29, 2026)
 
 Release-process hardening, and a real defect it found. `APP_VERSION` in `src/core/models/constants.ts` read `0.12.1` while the app shipped 0.18.15 — six minor versions of drift. It is not displayed anywhere, which is why it went unnoticed: `AboutPage` and `ChangelogPage` both render `CHANGELOG[0].version`, so the visible version was always right. What `APP_VERSION` actually does is get stamped into every exported model as `appVersion`, by both `exportModel` and `exportAllModels` — so it is the provenance record on user data, and every model exported since v0.12.2 carries a version stamp naming a release it was not produced by. Files already exported cannot be corrected retroactively; exports from this release forward are correct, and `npm run shipgate` now fails if the constant ever parts company with `package.json` again. Separately, v0.13.0 existed in the in-app changelog but had never been written into `CHANGELOG.md`, so the repository's own record skipped from v0.13.1 to v0.12.2 for nearly three months; it has been backfilled verbatim from the data file. This release also adds the SPERT® Suite ship gate: `npm run shipgate` locally and the same script in CI on every pull request and push to `main` — the first continuous integration this repository has ever had. Until now a green check meant Vercel had built a preview, not that the tests had run, because nothing ran them. Three guards were added to the always-run suite, each verified to fail against the real defect before being trusted to pass. No functional, data, or interface changes to the app itself. Build clean, all 360 tests pass (up from 351), ESLint at its 23-warning baseline.
