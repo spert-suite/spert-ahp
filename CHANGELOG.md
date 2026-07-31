@@ -1,5 +1,18 @@
 # SPERT® AHP — Changelog
 
+## v0.18.18 (July 31, 2026)
+
+Tooling only — no functional, data, or interface changes to the app itself. It behaves identically to v0.18.17.
+
+The ship gate could only ever be told about **one** changelog file, so the in-app version history was invisible to it. That matters more here than in most of the suite: this app has no separate displayed version constant. `AboutPage` and `ChangelogPage` both render `CHANGELOG[0].version` from `src/components/shell/changelogData.ts`, so the newest entry in that file **is** the version users see on screen. A stale entry there is a wrong version displayed, not merely a missing note.
+
+`shipgate.config.json` now declares that file as a `changelog.extraSurfaces` entry in `firstVersion` mode, so the gate fails if its newest entry parts company with `package.json`. This is deliberately redundant with `changelog-surfaces.test.ts`, which already ties the two together; both are kept, because the gate reports the disagreement at the release boundary with the fix named.
+
+Each failure path was verified by mutation before the change was accepted — a drifted copy, a removed entry and a deleted file each fail the gate.
+
+### Changed
+- **The ship gate now checks the in-app changelog.** `changelog.extraSurfaces` added to `shipgate.config.json`; `scripts/shipgate.mjs` gains support for it and stays byte-identical across all nine suite repositories.
+
 ## v0.18.17 (July 31, 2026)
 
 Tooling only — no functional, data, or interface changes to the app itself. It behaves identically to v0.18.16.

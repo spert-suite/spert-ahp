@@ -13,7 +13,17 @@
 
   "changelog": {
     "file": "CHANGELOG.md",
-    "headingPattern": "^## v([\\d.]+)\\s*\\("
+    "headingPattern": "^## v([\\d.]+)\\s*\\(",
+
+    "_extraSurfacesNote": "Deliberately REDUNDANT with changelog-surfaces.test.ts, which already ties this file to CHANGELOG.md. Kept because the in-app data file is load-bearing here in a way it is not elsewhere: this repo has no displayed APP_VERSION, so AboutPage and ChangelogPage both render CHANGELOG[0].version — the newest entry IS the version users see. A stale entry here is a wrong version on screen, not just a missing note.",
+
+    "extraSurfaces": [
+      {
+        "file": "src/components/shell/changelogData.ts",
+        "match": "firstVersion",
+        "note": "CHANGELOG[0].version is the version displayed in the app. There is no separate displayed constant."
+      }
+    ]
   },
 
   "claudeMdVersionPatterns": [],
