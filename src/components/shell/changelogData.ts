@@ -9,6 +9,19 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.18',
+    date: '2026-07-31',
+    sections: [
+      {
+        title: 'Changed — the release checks now cover this page',
+        items: [
+          'Nothing in the app changed. It behaves exactly as it did in 0.18.17, and no decision, export or setting is affected.',
+          'The version number shown throughout SPERT AHP is taken from the newest entry on this page, so if an entry were ever missed, the app would display the wrong version. The release checks now verify that this page carries an entry for the version being released, and refuse the release if it does not.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.17',
     date: '2026-07-31',
     sections: [
