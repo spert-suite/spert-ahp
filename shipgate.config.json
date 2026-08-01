@@ -1,7 +1,9 @@
 {
   "repo": "spert-ahp",
 
-  "_versionConstant": "Deliberately absent. This repo has no displayed APP_VERSION — AboutPage and ChangelogPage both render CHANGELOG[0].version from src/components/shell/changelogData.ts, so the changelog entry IS the version bump. That surface is tied to CHANGELOG.md by changelog-surfaces.test.ts, and CHANGELOG.md is tied to package.json below, so the displayed version is covered transitively.",
+  "_versionConstant": "Deliberately absent. This repo has no displayed APP_VERSION — AboutPage, ChangelogPage and AppFooter all render CHANGELOG[0].version from src/components/shell/changelogData.ts, so the changelog entry IS the version bump. That surface is tied to CHANGELOG.md by changelog-surfaces.test.ts, and CHANGELOG.md is tied to package.json below, so the displayed version is covered transitively.",
+
+  "_versionConstantCorrection": "The note above was WRONG until v0.18.20, and wrong in the way that matters: it read 'AboutPage and ChangelogPage both render CHANGELOG[0].version' and concluded the displayed version was covered. AppFooter.tsx rendered the literal JSX text 'Version 0.18.11' — a displayed version surface, hardcoded, that this gate had never been told about. It sat stale for eight releases while the Changelog page two clicks away showed the right number. Transitive coverage is only ever as good as the enumeration of what displays the version, so treat that enumeration as the claim to check. The footer now derives from CHANGELOG[0].version like the other two, and src/__tests__/footer-version.test.tsx holds it there — it asserts both that the rendered text matches the changelog data and that the file contains no version literal at all, the second because a freshly hardcoded literal is correct on the day it is written and would not fail the first assertion until the next bump. No extraVersionSurfaces entry is added for the footer: there is no longer a literal in it for this gate to match, and adding one would re-introduce the second source of truth the fix removed.",
 
   "extraVersionSurfaces": [
     {
