@@ -13,6 +13,20 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.20',
+    date: '2026-07-31',
+    sections: [
+      {
+        title: 'Fixed — the version shown in the footer was wrong',
+        items: [
+          'The version number at the bottom of every page had been stuck at 0.18.11 since June 26, through eight releases. It was written into the page by hand rather than read from anywhere, and the hand-updating stopped. Anyone who compared it against the version on this page saw two different numbers; this page was the correct one.',
+          'The footer now takes its version from this changelog, which is where the About page and this page already take theirs. There is one number to keep right instead of two, and an automated check refuses a release if the footer ever stops agreeing with it.',
+          'Nothing else changed, and nothing you have saved or exported is affected. The version recorded inside exported decisions is kept separately and was correct.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.19',
     date: '2026-07-31',
     sections: [

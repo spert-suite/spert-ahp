@@ -2,6 +2,8 @@
 // Licensed under the GNU General Public License v3.0.
 // See LICENSE file in the project root for full license text.
 
+import { CHANGELOG } from './changelogData';
+
 interface AppFooterProps {
   onNavigate?: (page: string) => void;
 }
@@ -15,7 +17,7 @@ export default function AppFooter({ onNavigate }: AppFooterProps) {
           onClick={() => onNavigate?.('Changelog')}
           className="text-blue-600 hover:text-blue-700"
         >
-          Version 0.18.11
+          Version {CHANGELOG[0]?.version ?? 'unknown'}
         </button>
         {" "}| Licensed under GNU GPL v3
       </div>

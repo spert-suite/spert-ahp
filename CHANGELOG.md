@@ -1,5 +1,23 @@
 # SPERT® AHP — Changelog
 
+## v0.18.20 (July 31, 2026)
+
+The version in the footer was the literal JSX text `Version 0.18.11`, hardcoded, derived from nothing. It was hand-bumped at every release through v0.18.11 on June 26 and then never again, so it stood still across eight releases while the app shipped 0.18.19. The disagreement was on screen the entire time: the footer said one number and the Changelog page, two clicks away, said another.
+
+This is the first user-visible change since v0.18.16 — v0.18.17 through v0.18.19 were tooling and comments only.
+
+### Fixed
+- **The footer renders `CHANGELOG[0].version`**, the same source `AboutPage` and `ChangelogPage` already read. `APP_VERSION` in `src/core/models/constants.ts` was deliberately *not* used: it is the provenance stamp written into exported models, not a display value, and it has been stale before — it sat at 0.12.1 while the app shipped 0.18.15. Deriving from the changelog keeps one source of truth rather than making the footer the first consumer of a second one.
+
+### Added
+- **`src/__tests__/footer-version.test.tsx`.** Two assertions, because they fail at different moments. The render check fails when the footer stops agreeing with the changelog data. The source check fails the moment a version literal reappears in `AppFooter.tsx` at all — which is the assertion that matters, because a freshly hardcoded literal is correct on the day it is written and would not fail the render check until the *next* bump. That is precisely how this defect survived being written.
+
+### Changed
+- **`shipgate.config.json` no longer records a false premise.** Its `_versionConstant` note read that "AboutPage and ChangelogPage both render `CHANGELOG[0].version`" and concluded from that enumeration that the displayed version was covered transitively. The enumeration was incomplete, so the conclusion was wrong. The note now names all three surfaces and carries the correction beside it. No `extraVersionSurfaces` entry was added for the footer: there is no literal left in it to match, and adding one would re-introduce the second source of truth this release removes.
+
+### Why the gate could not see it
+The gate checks the surfaces it is told about, and both guards that might have caught this were pointed elsewhere. `changelog-surfaces.test.ts` ties the two changelog files to each other and never reads a component. The gate's version-surface block was told, in config, that no component displays a version — so it did not look. Transitive coverage is only ever as strong as the enumeration it rests on, and nothing was checking the enumeration. It was found by loading the built app in a browser during the v0.18.19 release, which is the one check that reads what is actually on screen.
+
 ## v0.18.19 (July 31, 2026)
 
 Comments and tooling only — no functional, data, or interface changes. The app behaves identically to v0.18.18.
