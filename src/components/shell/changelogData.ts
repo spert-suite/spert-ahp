@@ -1,3 +1,7 @@
+// Copyright (C) 2026 William W. Davis, MSPM, PMP. All rights reserved.
+// Licensed under the GNU General Public License v3.0.
+// See LICENSE file in the project root for full license text.
+
 export interface ChangelogEntry {
   version: string;
   date: string;
@@ -8,6 +12,21 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '0.18.19',
+    date: '2026-07-31',
+    sections: [
+      {
+        title: 'Changed — copyright and licence notices',
+        items: [
+          'Nothing in the app changed. It behaves exactly as it did in 0.18.18, and no decision, export or setting is affected.',
+          'Every file of source code in this project now carries the copyright and licence notice that the rest of the SPERT® Suite has carried since March. 118 files were missing it, and only five already had one. This project was not skipped on purpose — it did not exist yet when the notices were added everywhere else, and was created four weeks later.',
+          'The notice matters because the licence this software is released under adds four extra terms, and the licence requires each source file to say where those terms can be read. A file with no notice points a recipient nowhere.',
+          'A new automated check now refuses a release if any source file is missing the notice, including files that have not yet been committed. Every way it could fail was deliberately triggered and confirmed to be caught before it was trusted.',
+        ],
+      },
+    ],
+  },
   {
     version: '0.18.18',
     date: '2026-07-31',

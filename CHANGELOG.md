@@ -1,5 +1,23 @@
 # SPERT® AHP — Changelog
 
+## v0.18.19 (July 31, 2026)
+
+Comments and tooling only — no functional, data, or interface changes. The app behaves identically to v0.18.18.
+
+### Added
+- **Every source file now carries the SPERT® Suite copyright header, and a test keeps it that way.** 118 files had none: 113 under `src/`, plus `src/index.css`, `eslint.config.js`, `vite.config.ts`, `vitest.config.ts` and `index.html`. Only five files already carried it, all added since v0.18.14. This repository was never a deliberate holdout — it simply did not exist yet on 2026-03-10, when one coordinated pass stamped roughly 1,300 files across six of the nine suite repositories. Its first commit was 2026-04-05.
+- **`src/__tests__/copyright-headers.test.ts`.** It strips comment framing so one comparison covers `//`, `/* */` and `<!-- -->`, and requires all three lines. It also requires the comment to close: `index.html` and `src/index.css` are parsed by neither TypeScript nor the test runner, so an unclosed `<!--` would swallow the whole document with nothing else to notice. It reads untracked files as well as committed ones, so a missing header fails before the commit rather than after, and it asserts both a file-count floor and the exact set of directory categories it expects, so it cannot quietly degrade into a check of nothing.
+- **`vite.config.*.timestamp-*` is now gitignored.** Vite leaves those at the project root if it is killed while bundling a TypeScript config, and the guard would scope one as a root config file and fail for a reason its message could not explain.
+
+### Answered
+- **`CLAUDE.md` had carried an open question since v0.18.14** — *"Copyright headers are inconsistent here — decide before bulk-editing"* — asking that the remaining files not be retrofitted without a deliberate call, because it is a large diff. That call has now been made, and the section records the decision rather than deferring it.
+
+### Why the third line of the header matters
+`LICENSE` adds four terms under GPL v3 Section 7 — attribution preservation, UI notice preservation, trademark reservation, and marking of modified versions. Section 7 requires a source file carrying such terms to either state them or say where they are found. The line `See LICENSE file in the project root for full license text.` is that notice. A file with no header at all gives a recipient no route to those clauses.
+
+### Note on the guard
+`tsconfig.json` excludes `src/**/__tests__/**`, so this guard is the one file in the repository the compiler never checks — confirmed by its absence from `tsc --listFiles`. It must stay in that directory, and it was typechecked standalone under full strictness instead. Every failure path was verified by mutation before it was trusted: a removed header, a two-line header, a deleted scope category, a stale exemption and an unclosed HTML comment each fail it by name.
+
 ## v0.18.18 (July 31, 2026)
 
 Tooling only — no functional, data, or interface changes to the app itself. It behaves identically to v0.18.17.
