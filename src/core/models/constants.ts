@@ -1,3 +1,7 @@
+// Copyright (C) 2026 William W. Davis, MSPM, PMP. All rights reserved.
+// Licensed under the GNU General Public License v3.0.
+// See LICENSE file in the project root for full license text.
+
 import type {
   CompletionTier,
   TierConfig,
@@ -14,7 +18,7 @@ export const EIGENVECTOR_MAX_ITER = 1000;
 export const CURRENT_SCHEMA_VERSION = 1;
 // Stamped into every exported model as `appVersion` (exportModel, exportAllModels).
 // Must equal package.json's version — `npm run shipgate` enforces it.
-export const APP_VERSION = '0.18.18';
+export const APP_VERSION = '0.18.19';
 export const VOTER_SOFT_LIMIT = 30;
 export const VOTER_HARD_LIMIT = 50;
 export const PAIR_COVERAGE_WARNING = 0.70;
