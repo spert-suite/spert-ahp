@@ -1,0 +1,2 @@
+Temporary file for PR #69 — verifies Vercel deploys a real file diff after the
+spert-suite org transfer. Delete with the branch.
