@@ -1,2 +1,5 @@
 Temporary file for PR #69 — verifies Vercel deploys a real file diff after the
 spert-suite org transfer. Delete with the branch.
+
+Reconnect verification: third push, after Git connection was removed and
+re-established against spert-suite/spert-ahp.
