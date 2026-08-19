@@ -178,6 +178,10 @@ export class FirestoreAdapter implements StorageAdapter {
   }
 
   private async computeNextOrder(): Promise<number> {
+    // ⚠️ Same security-load-bearing membership filter as `listModels()` — see the
+    // note there. The Firestore `list` rule only permits a query whose filter
+    // proves membership, and the guard that pins rule and query together lives in
+    // the spert-landing-page repo, where it cannot see edits made here.
     const q = query(
       collection(requireDb(), `${NAMESPACE}_projects`),
       where(`members.${this.uid}`, 'in', ['owner', 'editor', 'viewer']),
@@ -356,6 +360,19 @@ export class FirestoreAdapter implements StorageAdapter {
   }
 
   async listModels(): Promise<ModelIndexEntry[]> {
+    // ⚠️ This filter's SHAPE is a security boundary, not a convenience.
+    // firestore.rules constrains `list` on this collection to
+    // members[request.auth.uid] in ['owner', 'editor', 'viewer'], and Firestore
+    // permits a list query ONLY when its filter PROVES that constraint. Drop or
+    // change this filter and you do not get more rows — you get
+    // PERMISSION_DENIED, and no project loads at all.
+    // Until 2026-08-19 the rule was `allow list: if isAuth()`, which let any
+    // signed-in SPERT user read every project in this collection.
+    // ⚠️ The rule and this query are pinned together by
+    // rules-tests/project-collections-list.test.ts in the spert-landing-page
+    // repo (`npm run test:rules`). That test encodes this query AS WRITTEN and
+    // lives in a DIFFERENT repository, so it will NOT fail when you edit this
+    // line. Change one, change the other.
     const q = query(
       collection(requireDb(), `${NAMESPACE}_projects`),
       where(`members.${this.uid}`, 'in', ['owner', 'editor', 'viewer']),
@@ -392,6 +409,10 @@ export class FirestoreAdapter implements StorageAdapter {
     // projects. The deployed rules would reject those writes anyway, but
     // the client-side guard surfaces the error as a filtered no-op rather
     // than a partial-batch failure (v0.15.0 audit finding #6).
+    // ⚠️ Same security-load-bearing membership filter as `listModels()` — see the
+    // note there. The Firestore `list` rule only permits a query whose filter
+    // proves membership, and the guard that pins rule and query together lives in
+    // the spert-landing-page repo, where it cannot see edits made here.
     const q = query(
       collection(requireDb(), `${NAMESPACE}_projects`),
       where(`members.${this.uid}`, 'in', ['owner', 'editor', 'viewer']),
