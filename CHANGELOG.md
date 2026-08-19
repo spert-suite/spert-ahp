@@ -1,5 +1,13 @@
 # SPERT® AHP — Changelog
 
+## v0.18.22 (August 19, 2026)
+
+Security headers only — no functional, data, or interface changes.
+
+### Changed
+- **The app now sends four security headers it was not sending before.** `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` and `Permissions-Policy` are now returned on every response. A live check across the SPERT® Suite found this app was the only one of eight serving none of them; the other seven already did, so this brings it into line rather than introducing anything new.
+- **`X-Frame-Options` is the one that mattered.** Without it there was nothing stopping this app from being loaded invisibly inside a frame on another site, where a visitor could be induced to click controls they cannot see. It is set to `DENY`, matching six of the other seven apps.
+
 ## v0.18.21 (August 2, 2026)
 
 Licensing only — no functional, data, or interface changes. The app behaves identically to v0.18.20.

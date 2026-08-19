@@ -13,6 +13,20 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.22',
+    date: '2026-08-19',
+    sections: [
+      {
+        title: 'Changed — four security headers this app was not sending',
+        items: [
+          'Security headers only. Nothing in the app itself changed — it behaves identically to v0.18.21.',
+          'The app now returns X-Content-Type-Options, X-Frame-Options, Referrer-Policy and Permissions-Policy on every response. A live check across the SPERT® Suite found this app was the only one of eight serving none of them; the other seven already did, so this brings it into line rather than introducing anything new.',
+          'X-Frame-Options is the one that mattered. Without it there was nothing stopping this app from being loaded invisibly inside a frame on another site, where a visitor could be induced to click controls they cannot see. It is set to DENY, matching six of the other seven apps.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.21',
     date: '2026-08-02',
     sections: [
