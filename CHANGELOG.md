@@ -1,5 +1,13 @@
 # SPERT® AHP — Changelog
 
+## v0.18.23 (August 19, 2026)
+
+Sign-in change — no functional, data, or interface changes beyond the Settings page wording.
+
+### Changed
+- **Microsoft sign-in now requires a work or school account.** Personal Microsoft accounts — outlook.com, hotmail.com, live.com — are no longer accepted, and are refused at the sign-in screen before any password is entered. Microsoft itself enforces this, not the app. The change was made for institutions evaluating the Suite, who reasonably expect "sign in with Microsoft" to mean an organisational account rather than any account at all.
+- **Nothing changes for personal use — sign in with Google instead.** Google still accepts personal accounts, so anyone can still enable cloud storage. The Settings page now says so, rather than letting you choose Microsoft and discover the restriction from an error message.
+
 ## v0.18.22 (August 19, 2026)
 
 Security headers only — no functional, data, or interface changes.

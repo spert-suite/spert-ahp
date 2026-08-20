@@ -234,6 +234,10 @@ export default function StorageSection({ onClose }: StorageSectionProps = {}) {
               Sign in with Microsoft
             </button>
           </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Microsoft sign-in requires a work or school account. For a personal
+            account, use Google.
+          </p>
         </div>
       )}
 
