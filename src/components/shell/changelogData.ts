@@ -13,6 +13,19 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.24',
+    date: '2026-08-20',
+    sections: [
+      {
+        title: 'Internal — a safeguard against a future change breaking saving',
+        items: [
+          'Decisions saved to the cloud are accepted only if every field they carry appears on a fixed list the server checks. Adding a new piece of information to a decision without also adding it to that list would have compiled cleanly, passed every existing check, and then failed for everyone the moment it shipped. The build now refuses to compile that mistake, and names the field responsible so it can be fixed in seconds rather than diagnosed from a server error.',
+          'Nothing changes for a user today. No bug was fixed here — the app and the server agree on every field they exchange, and did before this release. The safeguard exists so they cannot quietly stop agreeing later.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.23',
     date: '2026-08-19',
     sections: [

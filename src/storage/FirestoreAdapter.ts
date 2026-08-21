@@ -99,6 +99,54 @@ interface FirestoreModelDoc {
   schemaVersion: number;
 }
 
+/**
+ * ⚠️ COMPILE-TIME GUARD — `keyof ModelDoc` must stay a subset of `keyof FirestoreModelDoc`.
+ *
+  * `updateModel` below spreads `Object.entries(partialMeta)` straight into a Firestore
+ * update, so EVERY key of `ModelDoc` reaches Firestore as a top-level field. Since
+ * spert-landing-page 2.5.17, `spertahp_projects` enforces `hasOnly()` on create AND
+ * update against a 23-field allowlist — `spertAhpProjectFields()` in
+ * `spert-landing-page/firestore.rules` — derived from `FirestoreModelDoc` above.
+ *
+ * Remove this assertion and the two drift apart silently: add a field to `ModelDoc`
+ * alone and it compiles, ships, and every save carrying that field fails with
+ * PERMISSION_DENIED — for every user, immediately.
+ *
+ * The guard names the offending key in the compiler error. That is the point of its
+ * shape, so do not "simplify" it to `keyof ModelDoc extends keyof FirestoreModelDoc`,
+ * which is correct about the invariant and reports only `Type 'true' is not assignable
+ * to type 'never'` — naming nothing. `void _relationHolds` is also load-bearing:
+ * without it `noUnusedLocals` fires TS6133.
+ *
+ * WHAT THIS DOES NOT COVER
+ * ------------------------
+ *   1. `ModelDoc` gains a key `FirestoreModelDoc` lacks ....... ✅ this guard
+ *   2. A caller passes an excess key to `updateModel` ......... ⚠️ partially —
+ *                                                    fresh object literals only
+ *   3. `FirestoreModelDoc` gains a key the landing
+ *      allowlist lacks ....................................... ❌ open (cross-repo)
+ *
+ * Row 2 is NOT fully covered by the `Partial<ModelDoc>` parameter. TypeScript's
+ * excess-property check fires only on fresh object literals: `updateModel(id, { title,
+ * bogus })` is TS2353, but `const v = { title, bogus }; updateModel(id, v)` and
+ * `updateModel(id, { ...wider })` both compile clean and carry `bogus` through the
+ * spread — same blast radius as row 1. Not reachable today; every caller is typed
+ * `Partial<ModelDoc>` at its own boundary. It goes live the moment one loosens, e.g. a
+ * prop typed `Record<string, unknown>`. Closing it requires a RUNTIME key set filtering
+ * `Object.entries`, i.e. the shape of spert-forecaster's `_PROJECT_WRITE_KEYS_GUARD`.
+ * That form is not a worse answer to row 1 — it is the only possible answer to a
+ * runtime row, because types erase. Different problem, deliberately out of scope here.
+ *
+ * Row 3 is the cross-repository coupling: the allowlist lives in another repository on
+ * its own release cycle and nothing here can close it. Same gap for all seven Firebase
+ * apps; tracked separately.
+ */
+type _MissingFromFirestoreModelDoc = Exclude<keyof ModelDoc, keyof FirestoreModelDoc>;
+const _relationHolds: [_MissingFromFirestoreModelDoc] extends [never]
+  ? true
+  : ['ModelDoc key absent from FirestoreModelDoc:', _MissingFromFirestoreModelDoc] = true;
+void _relationHolds;
+
 function requireDb() {
   if (!db) throw new Error('FirestoreAdapter: Firestore is not initialized (missing VITE_FIREBASE_* env vars)');
   return db;
