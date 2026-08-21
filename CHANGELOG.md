@@ -1,5 +1,13 @@
 # SPERT® AHP — Changelog
 
+## v0.18.24 (August 20, 2026)
+
+Internal safeguard only — no functional, data, or interface changes.
+
+### Added
+- **A safeguard now stops a future code change from silently breaking saving.** Decisions saved to the cloud are accepted only if every field they carry appears on a fixed list the server checks. Adding a new piece of information to a decision without also adding it to that list would have compiled cleanly, passed every existing check, and then failed for everyone the moment it shipped. The build now refuses to compile that mistake, and names the field responsible so it can be fixed in seconds rather than diagnosed from a server error.
+- **Nothing changes for a user today.** No bug was fixed here — the app and the server agree on every field they exchange, and did before this release. The safeguard exists so they cannot quietly stop agreeing later.
+
 ## v0.18.23 (August 19, 2026)
 
 Sign-in change — no functional, data, or interface changes beyond the Settings page wording.
