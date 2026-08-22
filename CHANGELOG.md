@@ -1,5 +1,18 @@
 # SPERT® AHP — Changelog
 
+## v0.18.25 (August 22, 2026)
+
+Development and release tooling only — no functional, data, or interface changes.
+
+### Fixed
+- **The shared release-checking script no longer says there is no automated checking.** That script is deliberately the same file in all nine SPERT® Suite projects. The note at the top of it said there was no automated checking anywhere in the suite — that a green tick on a proposed change meant only that a preview copy had been built, and that nothing ran the tests. That has not been true since the script existed. Automated checking runs on every one of the nine projects, on every proposed change and on every merge, and what it runs is this very script.
+- **The statement did not go out of date — it was untrue on the day it was written.** The same set of edits that added the script also switched the automated checking on, so the file contradicted a change sitting beside it. That distinction decides the remedy: a statement that decays can be helped by writing down when it was made; a statement that was never true cannot. What went wrong was that a claim about the projects was written into an explanation without being checked against them, and an explanation is read as background rather than as an assertion somebody has to verify.
+
+### Added
+- **A note that automated checking and a check run by hand are complementary rather than ranked.** The automated one works from a clean copy, so it catches anything that quietly depends on a file existing only on the author's own machine; but it also has less of the project to look at, so certain checks step aside there and only a hand-run finds what those cover.
+- **A note explaining how the code-style step is judged, and this project is the reason it had to be written carefully.** That step compares the number of reported issues against an agreed figure instead of reading pass or fail. In most projects the step reports failure at the agreed figure, so reading pass-or-fail would be too strict. In this one it reports success — all twenty-three are advisories rather than errors — so reading pass-or-fail would be too lenient and would let new issues through unnoticed. An earlier draft of the note stated only the first reason, which would have put the opposite of this project's own recorded rationale into this project's own file. The note now states the mechanism and lets both reasons sit under it.
+- **A warning that the figure counts every kind of issue, not the one kind a project set it for**, and that when it reaches zero the setting must be removed rather than set to zero — at zero the tool prints no count at all, and the step then fails asking for a number that was never printed.
+
 ## v0.18.24 (August 20, 2026)
 
 Internal safeguard only — no functional, data, or interface changes.
