@@ -27,9 +27,6 @@ vite.config.js.map
 vite.config.*.timestamp-*
 vitest.config.*.timestamp-*
 
-# Merged firestore rules — local-only artifact for Firebase Console paste
-firestore.rules.merged
-
 # Audit baseline for the dependency-upgrade campaign (local-only, not committed)
 /.audit-baseline.json
 
