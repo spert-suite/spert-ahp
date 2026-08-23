@@ -1,5 +1,23 @@
 # SPERT® AHP — Changelog
 
+## v0.18.28 (August 23, 2026)
+
+Security only — no functional, data, or interface changes. Thirteen of the project's fourteen known security advisories are cleared; the fourteenth is deliberately deferred one release, for the reason given below.
+
+### Security
+- **Thirteen advisories closed across five packages.** `brace-expansion` 5.0.6 → 5.0.9 (3 advisories) · `undici` 7.28.0 → 7.29.0 (5) · `postcss` 8.5.15 → 8.5.23 (2) · `nanoid` 3.3.15 → 3.3.18 (2) · `protobufjs` 7.6.4 → 7.6.5 (1). Every one is a transitive dependency at a single install location; none is a package this project depends on directly, and none required a major version.
+- **The count is of advisories, not packages.** Six packages were flagged, carrying fourteen distinct advisories between them. Counting packages would have reported "6 → 1" and hidden that one package accounted for five of them.
+
+### Fixed
+- **An existing safeguard had quietly stopped being one.** A pin on `protobufjs` was added in June to force a version above a then-critical advisory, and it did exactly that on the day it was written. A later advisory was published covering a *wider* range of versions — wide enough to include the one the pin had settled on. The pin did not fail and nothing reported it: it sat in the project file looking like the thing that had handled the problem, while resolving to a version inside the range it existed to escape. It is now pinned above the current range and carries a written note naming the advisory, because the version was never what moved — the advisory was.
+- **A second pin was found to be doing nothing, and was kept anyway.** A pin on `@grpc/grpc-js` was added at the same time for the same reason. It was tested both ways: with the pin present and with it removed, a from-scratch install resolves the identical version and reports no advisory. It is inert. It is kept rather than deleted, because deleting it has no measurable benefit and an unmeasured risk, and it now carries a note saying plainly that it is not currently doing work.
+
+### Notes
+- **Every one of these five fixes is newer than the project's 60-day settling period, and there was no alternative.** For each package, every version that escapes its advisory was checked: `brace-expansion` 5.0.9 (23 days old), `nanoid` 3.3.18 (15), `postcss` 8.5.23 (29), `protobufjs` 7.6.5 (49), `undici` 7.29.0 (29). **No settled version escapes any of the five ranges.** That is not this project's bad luck — these advisories are recent, so the first version fixing each one is necessarily recent too. A security fix is unsettled at the moment it matters, by construction. Security takes precedence, and the exceptions are recorded here rather than passed over.
+- **Where a choice existed, the oldest fixed version was taken rather than the newest.** `postcss` has four versions that escape its advisory; the automated tool selects the newest, 8.5.26, which is 16 days old. This release takes 8.5.23 — 29 days, the oldest that escapes, clearing the same two advisories with nearly twice the settling time behind it.
+- **The fourteenth advisory is deferred on purpose.** Clearing `esbuild` requires a small bump to `vite`, which as of today is 59.84 days old and crosses the 60-day line on 24 August. The advisory itself is low severity, affects only the development server, and only on Windows, which nobody develops this project on. Waiting a day or two clears it with no unsettled package at all, rather than adding a sixth exception to the list above.
+- Lockfile movement, measured rather than eyeballed: **5 entries changed, 0 added, 0 removed.**
+
 ## v0.18.27 (August 23, 2026)
 
 Development and release tooling only — no functional, data, or interface changes.

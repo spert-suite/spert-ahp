@@ -1,6 +1,6 @@
 {
   "name": "spert-ahp",
-  "version": "0.18.27",
+  "version": "0.18.28",
   "private": true,
   "type": "module",
   "engines": {
@@ -46,8 +46,15 @@
     "vite": "7.3.5",
     "vitest": "4.1.5"
   },
+  "_overrideNotes": {
+    "_why": "npm ignores unknown top-level keys and package.json admits no comments. Every entry in `overrides` must name the advisory it escapes and the range it must exceed, because the VERSION is never what moves \u2014 the advisory does. Both pre-existing overrides here were correct on the day they were written and had silently stopped being floors by 2026-08-23, in two opposite ways.",
+    "postcss": "GHSA-fxqj-rqcc-2cmp, GHSA-r28c-9q8g-f849. Vulnerable range <=8.5.22; must exceed 8.5.22. Pinned to 8.5.23, the OLDEST version that exits the range \u2014 published 2026-07-24, 29 days soaked, against 8.5.26's 16. `npm audit fix` picks the newest; the oldest that exits clears the same advisories with more soak behind it.",
+    "protobufjs": "GHSA-j3f2-48v5-ccww. Vulnerable range >=7.5.0 <=7.6.4 (upper bound INCLUSIVE); must exceed 7.6.4. Pinned 7.6.5, the only version that exits. Was `^7.6.3` from v0.18.3 (731dad7), which cleared a then-critical advisory by resolving 7.6.4 \u2014 correct when written. A later advisory widened to include 7.6.4 and the floor was inside the range it existed to escape, while still looking like the thing that had handled it.",
+    "@grpc/grpc-js": "No advisory currently flags any 1.9.x. Added at v0.18.3 (731dad7) as a real floor clearing a then-high advisory. Measured inert 2026-08-23: @firebase/firestore itself declares ~1.9.0, 1.9.16 is the top of that line, and a fresh resolution gives 1.9.16 with the override present AND absent. Kept rather than deleted \u2014 deletion has measured-zero benefit and unmeasured risk \u2014 but it is NOT doing work today."
+  },
   "overrides": {
-    "protobufjs": "^7.6.3",
+    "postcss": "8.5.23",
+    "protobufjs": "7.6.5",
     "@grpc/grpc-js": "~1.9.16"
   }
 }
