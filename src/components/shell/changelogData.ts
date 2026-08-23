@@ -13,6 +13,25 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.28',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Security — thirteen of fourteen known advisories closed',
+        items: [
+          'Thirteen security advisories are closed across five supporting libraries. None of them is a library this app depends on directly \u2014 all sit further down the chain, at a single place each \u2014 and none needed a major version change. Nothing about how the app works, looks, or stores data changes.',
+          'The count above is of advisories, not libraries. Six libraries were flagged, carrying fourteen separate advisories between them; one library alone accounted for five. Reporting the number of libraries would have said "six down to one" and hidden that.',
+          'A safeguard added in June had quietly stopped being one. It forced a supporting library above a then-critical advisory, and did exactly that on the day it was written. A later advisory was published covering a wider span of versions \u2014 wide enough to include the one the safeguard had settled on. Nothing failed and nothing reported it: the safeguard sat in the project file looking like the thing that had handled the problem, while pointing at a version inside the range it existed to escape. It has been raised, and it now carries a written note naming the advisory, because the version was never what moved \u2014 the advisory was.',
+          'A second safeguard, added at the same time for the same reason, turned out to be doing nothing. It was tested both ways: with it and without it, a from-scratch install produces the identical version and reports no advisory. It has been kept rather than removed \u2014 removing it has no measurable benefit and a risk nobody has measured \u2014 and it now says plainly, in writing, that it is not currently doing work.',
+          'All five updates are newer than the 60-day settling period this project normally requires, and for each one it was checked whether any settled version would also have cleared the advisory. None would. That is not bad luck: these advisories are recent, so the first version fixing each is necessarily recent too. A security fix is unsettled at the moment it matters. Security takes precedence and the exceptions are written down rather than passed over.',
+          'Where more than one fixed version existed, the oldest was taken rather than the newest. One library had four versions that escape its advisory; the automatic tool picks the newest, at sixteen days old. This release takes the oldest that escapes, at twenty-nine days \u2014 the same advisories cleared, with nearly twice the settling time behind it.',
+          'The fourteenth advisory is deliberately left for the next release. Clearing it needs a small update to the build tool, which today is a few hours short of the 60-day line. That advisory is low severity, affects only the development server, and only on Windows, which nobody develops this project on \u2014 so waiting a day clears it with nothing unsettled at all, rather than adding a sixth exception to the list.',
+          'Security only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.27',
     date: '2026-08-23',
     sections: [
