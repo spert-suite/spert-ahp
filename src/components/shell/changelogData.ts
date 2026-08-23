@@ -13,6 +13,24 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.27',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Internal — the coverage measurement now counts every file, and last release\u2019s figures are corrected',
+        items: [
+          'The measurement added last release only looked at files the tests actually opened. A file no test ever touches was missing from the list entirely rather than shown with a score of zero — and those two look the same to a person reading a table while being quite different to anything reading it automatically. The setting that changes this is now switched on. The list goes from 47 files to 83, of which 36 are newly included: 34 scoring zero, and two that contain nothing that runs.',
+          'Last release\u2019s note gave the wrong numbers, and this note carries the corrected pair. It said 34 of the project\u2019s 81 files were missing from the list. The right figures are 36 of 83, from a tracked total of 84 — the extra file being a single line that describes types and produces nothing that could ever be measured.',
+          'The cause is worth writing down because it will happen again. The file count came from a pattern that quietly skips anything sitting at the very top of the source folder, which here meant three files including the application itself and the file that starts it. Both halves of the published sentence came from that same faulty count, so they agreed with one another and the total looked right. All three skipped files were also missing from the measurement, so the subtraction still balanced. An error that agrees with itself is the kind that survives being checked.',
+          'The corrected figures can be checked rather than taken on trust: 36 plus 47 makes 83, and 83 is the number anyone gets by running the measurement. The old pair could not be checked that way, and that — not the size of the mistake — is what makes the new one better. Last release\u2019s note is deliberately left as it was written, because it records what was believed at the time.',
+          'The headline percentage fell from about seventy per cent to about fifty-one, and that fall is the point. No test changed and nothing got worse; thirty-six files that were previously invisible are now counted, most of them untested. A figure that had stayed the same would have meant the change did nothing.',
+          'Two cautions for anyone reading these numbers later. The printed table is an abbreviated view — it leaves out every file scoring full marks, and it shortens long file names from the left — so counting its rows gives 71 where the real answer is 83; read the figures from the data file instead. And whether the browsable report is switched on changes what the data file says about the two files that contain nothing to measure. That was isolated with four separate runs. Two measurements are only comparable if the same set of reports was switched on for both.',
+          'Development and release tooling only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.26',
     date: '2026-08-23',
     sections: [

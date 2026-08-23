@@ -1,5 +1,24 @@
 # SPERT® AHP — Changelog
 
+## v0.18.27 (August 23, 2026)
+
+Development and release tooling only — no functional, data, or interface changes.
+
+### Added
+- **The coverage census now counts every source file, not only the ones a test happens to load.** `vitest.config.ts` gains a `coverage` block declaring `include: ['src/**/*.{ts,tsx}']`. Without it, Vitest reports only files loaded during a run, so a file no test imports was *absent from the report* rather than listed at 0% — and absent and zero look identical to a human reading a table while being different things to a script joining on path. The census goes from 47 files to **83**, of which **36 newly appear**: 34 at 0%, and 2 that contain nothing executable at all.
+- **A machine-readable summary.** The `json-summary` reporter writes `coverage/coverage-summary.json`. Both new reporters write `.json`, so neither adds a file the code-style step would read — the exclusion added in v0.18.26 stays sufficient.
+
+### Fixed
+- **The file counts published in v0.18.26 were wrong, and this entry carries the corrected pair.** That entry said *"34 of the repository's 81 non-test source files"* were absent from the census. The true figures are **36 of 83**, out of a tracked population of **84** — the third file is a one-line declaration that emits nothing, so it is excluded from coverage for the same reason it could never be covered.
+- **The cause, because it will recur.** The population was counted with a file-matching pattern that silently drops everything sitting directly at the top of the source folder — three files, including the application root and its entry point. Both halves of the published sentence came from that same count, so they agreed with each other: 34 absent plus 47 present made 81, and the total looked right. All three dropped files were *also* missing from the census, so the arithmetic balanced and nothing flagged it. An error that is self-consistent is the kind that survives review. The v0.18.26 entry is deliberately left as written — it records what was believed at the time — and the correction lives here.
+- **How to check this one rather than trust it:** 36 + 47 = 83, and 83 is the file count anyone can produce by running the coverage command. The earlier pair could not be checked that way, and that property — not the size of the error — is what makes the new figures better.
+
+### Notes
+- **The measured percentage fell from 69.87% to 50.98% of statements, and that fall is the point.** No test changed and no code got worse. Thirty-six files that were previously invisible are now counted, most of them untested. A number that had stayed put would have meant the setting did nothing.
+- **Read counts and percentages from `coverage-summary.json`, never from the printed table.** The table is a filtered, abbreviated view: it omits every file scoring 100% on all four measures — twelve of them here — and it shortens long names from the left, so `ComparisonInput.tsx` prints as `...isonInput.tsx`. Forty-seven of its rows are abbreviated. Counting its rows gives 71 where the real figure is 83.
+- **Two of the 83 files contain nothing to measure** — one is 476 lines of type declarations, the other a single re-export. Both compile to no runtime code. They are kept in the census deliberately, because that fact is worth knowing, but any calculation involving a *count* of files should first drop the ones with nothing to instrument.
+- **A reporter changed another reporter's output, which is worth recording.** Whether the browsable HTML report is enabled alters what the machine-readable summary says about those two files: with it, they read 0%; without it, 100%. Measured four ways to isolate it, and it tracks the HTML reporter alone. The configuration that ships enables the HTML report, so those files read 0% — but it means a summary figure is only comparable against another produced with the same set of reports enabled.
+
 ## v0.18.26 (August 23, 2026)
 
 Development and release tooling only — no functional, data, or interface changes.
