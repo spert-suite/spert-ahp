@@ -1,5 +1,20 @@
 # SPERT® AHP — Changelog
 
+## v0.18.30 (August 23, 2026)
+
+Development tooling only — no functional, data, or interface changes. **This adds a measurement, not a fix.** Nothing in the application was changed in response to what it found.
+
+### Added
+- **A cognitive-complexity check, and a baseline of what it currently finds.** `eslint-plugin-sonarjs` is installed and exactly one of its rules is switched on: cognitive complexity, at a threshold of 15. It measures how hard a function is to follow — nesting, branching, and jumps in control flow — rather than how long it is. **Nineteen functions are over the threshold today**, ranging from 16 to 41, across twelve files. That number is now held steady by the release check.
+- **A tool for measuring code that has not been written yet.** `npm run cc <file>` reports the complexity of *every* function in a file, not only the ones over the threshold — and given a line range, it reports what a block *would* measure if it were lifted into its own function. That second form lets a proposed restructuring be costed before a line moves. The check only ever reports failures, so on its own it cannot answer either question.
+- **A guard on that tool, and an honest account of the half that could not come with it.** The tool computes complexity by running the linter over text; text that does not parse produces no findings at all, which is indistinguishable from "every function scored zero". It must fail loudly instead, and now there is a test proving it does. The sibling project this guard came from carries four further tests covering functions whose findings are deliberately silenced — those are tied to files that do not exist here, and **this project has no silenced findings to test against.** They were left out rather than adapted, with a note in the test file saying to bring them across the day the first one is added.
+
+### Notes
+- **These nineteen are a measurement, not a list of defects, and none of them is being fixed here.** A high score marks a function that is hard to hold in your head; whether that is worth changing is a separate judgement, made per function, and sometimes the answer is no. A sibling project finished a similar effort with three findings still standing, each with its reason written down beside it. **Zero was never the target.**
+- **The release check now holds a count of 42** — the nineteen new findings plus the twenty-three advisory warnings that were already there. It fails in **both** directions: introducing a finding fails it, and so does removing one without updating the count. That second half is deliberate. A restructuring that moves complexity from one function into another rather than reducing it would otherwise pass silently.
+- **One rule, not the whole set.** The plugin offers around 400 checks; this enables one. A sibling measured the difference on a single day: 10 findings from this rule alone against 103 from the recommended set, and the extra 93 were not simply more signal — roughly a fifth were wrong for that codebase. The two numbers are not comparable, so which was chosen is recorded in the configuration itself.
+- **Not one of the nineteen is in a test file**, despite the check covering all 39 of them with no exclusion anywhere. The pre-existing twenty-three were also entirely outside the tests, so this is a clean result rather than a coincidence — anything found there would have been unambiguously new.
+
 ## v0.18.29 (August 23, 2026)
 
 Dependency and tooling maintenance only — no functional, data, or interface changes. **The project now reports zero known security advisories**, down from fourteen at the start of this work.

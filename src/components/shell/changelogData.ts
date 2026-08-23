@@ -13,6 +13,25 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.30',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Internal — a measurement of how hard the code is to follow, and a baseline',
+        items: [
+          'A new check measures cognitive complexity \u2014 roughly, how much you have to hold in your head to follow a function. It counts nesting, branching and jumps in control flow rather than length, so a long but straightforward function scores low and a short tangled one scores high. Nineteen functions are currently above the threshold, scoring between 16 and 41, across twelve files.',
+          'This adds a measurement, not a fix. Nothing in the app was changed in response to it, and nothing about how the app works, looks, or stores data changes.',
+          'The nineteen are not a list of defects and none is being fixed here. A high score marks a function that is hard to hold in your head; whether that is worth changing is a separate judgement made one function at a time, and sometimes the answer is no. A sister project finished similar work with three still standing, each with its reason recorded beside it. Zero was never the target.',
+          'A second tool was added alongside it. It reports the score of every function in a file rather than only the ones over the line, and \u2014 given a range of lines \u2014 reports what that block would score if it were pulled out into its own function. That lets a proposed restructuring be costed before anything moves. The check on its own can only report failures, so it cannot answer either question.',
+          'The release check now holds the total steady, and it fails in both directions: adding a finding fails it, and so does removing one without updating the recorded number. The second half is deliberate \u2014 a restructuring that shifts complexity from one function into another rather than reducing it would otherwise slip through unnoticed.',
+          'One rule was switched on, not the plugin\u2019s full set of roughly four hundred. A sister project measured both on the same day: ten findings from this rule alone against a hundred and three from the wider set, of which about a fifth were simply wrong for that codebase. The two totals are not comparable, so which one was chosen is written into the configuration where a reader will find it.',
+          'None of the nineteen is in a test file, although the check covers all thirty-nine of them with no exclusion anywhere. The twenty-three pre-existing advisories were also entirely outside the tests, so this is a clean answer rather than a coincidence.',
+          'Development tooling only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.29',
     date: '2026-08-23',
     sections: [
