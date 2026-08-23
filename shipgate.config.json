@@ -34,8 +34,9 @@
     {
       "name": "lint",
       "run": "npm run lint",
-      "expectProblems": 23,
-      "_note": "23 warnings, 0 errors — eslint exits 0 here, so gating on the exit code would let new warnings in silently. Hold the number steady instead."
+      "expectProblems": 42,
+      "_note": "42 = 23 pre-existing react-hooks/react-refresh WARNINGS + 19 sonarjs/cognitive-complexity ERRORS, measured at v0.18.30 and set in the same commit that installed the rule — never pre-set from a guess. eslint now exits 1 here because the sonarjs rule is `error`, so exit-code gating would fail every run; the count is what this gate holds. It is a RATCHET, not a threshold: it fails in BOTH directions, so a refactor that relocates complexity rather than removing it cannot pass. If it moves, say which rule moved it. A cognitive-complexity finding is not a defect and is not required to be fixed — the baseline is accepted, not owed.",
+      "_scopeNote": "Measured with `sonarjs/cognitive-complexity` ONLY, threshold 15 — NOT `sonarjs.configs.recommended`. The two are not comparable: at a sibling on one day the narrow rule found 10 and the broad set 103, of which ~21 were false positives for that codebase. A later reader cannot tell from the number alone which was taken, so it is recorded here."
     },
     { "name": "test", "run": "npm test" },
     { "name": "build (tsc -b && vite build)", "run": "npm run build" }
