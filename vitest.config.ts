@@ -28,10 +28,15 @@ export default defineConfig({
       exclude: ['src/**/__tests__/**', 'src/vite-env.d.ts'],
       // `json-summary` writes coverage-summary.json, which is the only file any
       // consumer should read a count or a percentage from. The text table is a
-      // filtered, left-truncated view: it omits every file at 100% on all four
-      // metrics (12 of 83 here) and prints `ComparisonInput.tsx` as
-      // `...isonInput.tsx`. Both reporters write .json, so neither adds a file
-      // ESLint would lint — see the `coverage/**` ignore in eslint.config.js.
+      // filtered, left-truncated view: it prints `ComparisonInput.tsx` as
+      // `...isonInput.tsx`, and it omits 12 rows here (it counts 0/0 as full);
+      // coverage-summary.json reports 10 files at 100% on all four, because
+      // `html` runs ahead of `json-summary` and mutates the shared map. The array
+      // is order-sensitive — read `statements.total`, never `pct`, and filter at
+      // ingest.
+      //
+      // Both reporters write .json, so neither adds a file ESLint would lint —
+      // see the `coverage/**` ignore in eslint.config.js.
       reporter: ['text', 'html', 'json-summary', 'json'],
     },
   },
