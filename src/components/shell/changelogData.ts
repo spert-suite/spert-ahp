@@ -13,6 +13,24 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.26',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Internal — how much of the app the tests actually reach can now be measured',
+        items: [
+          'Until this release there was no way to find out how much of this app its tests actually exercise. The tool that measures it was never installed, and — unusually — nothing said so. The test runner treats that tool as optional, so no command failed and no warning appeared. The gap was silent rather than noisy, which is why it lasted. Both are now in place, and a single command reports the answer.',
+          'The first measurement: the tests reach about seventy per cent of the app\u2019s code. Forty-seven files are reported on. Thirty-four more are not reported at all, because a file no test ever loads does not appear in the list rather than appearing with a score of zero — and five further files do appear with a score of zero. Those last two groups look the same on a printed page and are not the same thing, so the setting that would have merged them has deliberately been left alone for now.',
+          'The measuring tool is held to the exact version the test runner asks for, rather than the newest one available. The runner does not request a minimum here; it names one version. A mismatched pair is the thing that goes wrong, so the pair is pinned.',
+          'The report this produces is written into a new folder each time it runs. Two protections were added for it in the same change. The first keeps that folder out of the published repository — this project\u2019s source is public, and a generated folder that nobody had told version control to ignore was one routine command away from being published. The second stops the folder from breaking the release check.',
+          'The second of those was already broken, not merely at risk. The report writer quietly adds a line to the top of three of its own files as it writes them — a line that switches off code-style checking. That line is not in those files as they are distributed, so looking at the installed tool does not reveal it. The release check counts reported style issues against an agreed figure, and those three extra lines pushed the count from twenty-three to twenty-six, which fails the check with a message blaming new problems and never mentioning coverage. Measured both ways to confirm: twenty-six without the fix, exactly twenty-three with it.',
+          'A comment in the ignore file was also corrected. It said the project had no README, which stopped being true in June. That is not tidying: while this change was being prepared, the stale comment was read as evidence and produced a wrong conclusion that had to be caught and undone.',
+          'Development and release tooling only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.25',
     date: '2026-08-22',
     sections: [

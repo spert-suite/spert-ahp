@@ -1,5 +1,6 @@
 node_modules
 dist
+/coverage
 .DS_Store
 *.local
 .claude/
@@ -72,7 +73,8 @@ vitest.config.*.timestamp-*
 # Derive the allowlist, never recall it:   git ls-files ':(glob)*.md'
 /*.md
 !/CHANGELOG.md
-# Conventional root docs, not present today; listed so adding one needs no edit here.
+# Conventional root docs. README.md is tracked (added in e2e9e14); the other four are
+# not present today and are listed so adding one needs no edit here.
 !/README.md
 !/ARCHITECTURE.md
 !/SECURITY.md
