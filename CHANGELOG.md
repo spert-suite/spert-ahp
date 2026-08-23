@@ -1,5 +1,22 @@
 # SPERT® AHP — Changelog
 
+## v0.18.26 (August 23, 2026)
+
+Development and release tooling only — no functional, data, or interface changes.
+
+### Added
+- **Test coverage can be measured for the first time.** `@vitest/coverage-v8` is declared as an exact development dependency at `4.1.5`, and `npm run test:coverage` runs it. Neither existed before. Nothing reported the absence, either: `vitest` declares the provider as an *optional* peer dependency, so no command failed and no warning was printed — coverage was simply not a property this repository could measure. The sibling projects each had a coverage script that failed loudly with a missing-dependency error; this one had no script at all, so the gap was silent.
+- **The version is pinned to `vitest`'s exact peer requirement, not to the newest release.** `vitest@4.1.5` requires `@vitest/coverage-v8@4.1.5` — an exact range rather than a floor — so a matched pair is a constraint, not a preference. Both were published nineteen seconds apart on 21 April 2026.
+- **The first census: 70.03% of statements, 57.22% of branches, across 47 source files.** With no `coverage.include` configured, Vitest reports only the files a test run actually loads, so 34 of the repository's 81 non-test source files are absent from the report rather than listed at 0% — and a separate 5 are present at exactly 0%. Those are two different states that look identical in a printed table, and the distinction is deliberately left visible rather than configured away.
+
+### Fixed
+- **The generated coverage report is excluded from version control.** This repository is public, and the report directory is rewritten on every coverage run. Untracked and un-ignored, it was one bulk `git add` away from being committed and published. `/coverage` is now ignored.
+- **The generated coverage report no longer fails the release check.** This one was live, not hypothetical. The report's HTML writer copies three JavaScript assets into the output directory and prepends `/* eslint-disable */` to each on the way out — the text is injected at write time and is not present in the files as shipped, so inspecting the installed package does not reveal it. The code-style step then reports each as an unused directive, taking the count from 23 to 26 against an agreed figure of 23, and the release check fails with "new problems were introduced" while naming coverage nowhere. Measured both ways: 26 without the exclusion, exactly 23 with it. Note that no style rule is involved — none of them apply to a JavaScript file here — so turning rules on or off could not have suppressed it.
+- **A comment in the ignore file said a file that exists is not present.** It described `README.md` as "not present today"; the README was added in June and the comment was never updated. This is not a cosmetic fix: the stale comment was read as evidence during the preparation of this very change and produced a wrong conclusion that had to be caught and corrected.
+
+### Notes
+- The dependency was installed with `npm install --save-exact --save-dev @vitest/coverage-v8@4.1.5 --before=2026-06-24`. The date is a 60-day boundary, and it applies to the whole resolved set rather than only to the package named on the command line. It selected `magicast 0.5.3` over `0.5.4` and `ast-v8-to-istanbul 1.0.4` over `1.0.5`; the newer two were 22 and 39 days old. Thirteen packages were added, none removed, and no already-installed package changed version.
+
 ## v0.18.25 (August 22, 2026)
 
 Development and release tooling only — no functional, data, or interface changes.

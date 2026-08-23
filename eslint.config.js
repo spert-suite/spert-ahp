@@ -9,10 +9,18 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  // Skip build output and any nested git worktrees under .claude/ — Claude Code
-  // creates those for parallel feature work and their built dist/ bundles would
-  // otherwise be scanned as tens of thousands of minified-bundle errors.
-  { ignores: ['dist', '.claude/**'] },
+  // Skip build output, generated coverage reports, and any nested git worktrees
+  // under .claude/ — Claude Code creates those for parallel feature work and their
+  // built dist/ bundles would otherwise be scanned as tens of thousands of
+  // minified-bundle errors.
+  //
+  // coverage/ is not merely noise: istanbul's HTML reporter prepends
+  // `/* eslint-disable */` to each of the three .js assets it writes
+  // (istanbul-reports lib/html/index.js, the `assetHeaders` map), and ESLint
+  // reports each as an unused disable directive. That is not a rule firing — no
+  // rule below applies to a .js file — so enabling or disabling rules cannot
+  // suppress it. Measured: lint 23 -> 26, which fails the shipgate ratchet.
+  { ignores: ['dist', 'coverage/**', '.claude/**'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
