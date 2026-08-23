@@ -13,6 +13,21 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.25',
+    date: '2026-08-22',
+    sections: [
+      {
+        title: 'Internal — the release-checking script no longer says there is no automated checking',
+        items: [
+          'The script that checks a release before it ships is deliberately the same file in all nine SPERT® Suite projects. The note at the top of it said there was no automated checking anywhere in the suite — that a green tick on a proposed change meant only that a preview copy had been built, and that nothing ran the tests. That has not been true since the script existed. Automated checking runs on every one of the nine projects, on every proposed change and on every merge, and what it runs is this very script.',
+          'The statement did not go out of date — it was untrue on the day it was written. The same set of edits that added the script also switched the automated checking on, so the file contradicted a change sitting beside it. That distinction decides the remedy: a statement that decays can be helped by writing down when it was made; a statement that was never true cannot.',
+          'Two explanations were added while the file was open. The first records that automated checking and a check run by hand catch different things, so neither is sufficient alone. The second explains how the code-style step is judged — and this project is the reason it had to be written carefully. That step compares the number of reported issues against an agreed figure instead of reading pass or fail. In most projects the step reports failure at that figure, so reading pass-or-fail would be too strict; in this one it reports success, because all twenty-three are advisories rather than errors, so reading pass-or-fail would be too lenient and would let new issues through unnoticed. An earlier draft stated only the first reason, which would have put the opposite of this project’s own recorded rationale into this project’s own file.',
+          'Development and release tooling only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.24',
     date: '2026-08-20',
     sections: [
