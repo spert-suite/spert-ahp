@@ -13,12 +13,18 @@ AHP\ Doc*
 *.docx
 *.zip
 
-# TypeScript build output (tsc -b artifacts)
+# The incremental-build state file. `tsc -b` writes it even under `noEmit: true`,
+# so unlike the patterns this block used to carry, it matches something: measured
+# 2026-08-23, one file, 3181 bytes.
+#
+# Four sibling patterns were removed or re-filed here on the same date. The
+# heading claimed one cause — "TypeScript build output (tsc -b artifacts)" — for
+# five patterns with two different origins and only one live member, and the
+# heading was the actual defect. `src/**/*.js` and `src/**/*.js.map` matched zero
+# files and could not match any, because `noEmit: true` means `tsc` emits nothing;
+# they were deleted. `vite.config.js*` moved to the Vite block below, where it
+# belongs — see the note there.
 tsconfig.tsbuildinfo
-src/**/*.js
-src/**/*.js.map
-vite.config.js
-vite.config.js.map
 
 # Vite drops these at the project root when it bundles a TypeScript config, and
 # leaves them behind if the process is killed. They sit beside vite.config.ts
@@ -27,6 +33,17 @@ vite.config.js.map
 # failure message cannot explain.
 vite.config.*.timestamp-*
 vitest.config.*.timestamp-*
+#
+# The two below are a vestige of an older Vite config-bundling mechanism, not of
+# `tsc` — they sat under a "tsc -b artifacts" heading until 2026-08-23, which was
+# never true of them. Measured zero matches, and inert for a second, independent
+# reason: there is one `tsconfig.json` here, with no references and no composite,
+# and `vite.config.ts` is not in its `include` set, so `tsc` never sees the file
+# at all. Kept rather than deleted because an unmatched ignore line costs nothing,
+# while a wrongly-deleted one puts a generated file untracked AND un-ignored in a
+# public repository — the direction this repo has already been bitten in twice.
+vite.config.js
+vite.config.js.map
 
 # Audit baseline for the dependency-upgrade campaign (local-only, not committed)
 /.audit-baseline.json

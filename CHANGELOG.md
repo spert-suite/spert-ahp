@@ -1,5 +1,22 @@
 # SPERT® AHP — Changelog
 
+## v0.18.29 (August 23, 2026)
+
+Dependency and tooling maintenance only — no functional, data, or interface changes. **The project now reports zero known security advisories**, down from fourteen at the start of this work.
+
+### Security
+- **The fourteenth and last advisory is closed.** `esbuild` moves to 0.28.1, reached by a small update to the build tool (`vite` 7.3.5 → 7.3.6) which widened the range of `esbuild` it accepts. That widening is the build tool's own statement that the newer line works, which is why this did not require a major version of anything. 0.28.1 was published on 11 June — **72 days old, and the only fix in this entire effort that had already passed the project's 60-day settling period.** 0.28.2 clears the same advisory and is 14 days old; taking the oldest version that escapes is what made this one compliant rather than another recorded exception.
+
+### Changed
+- **Every dependency is now pinned to an exact version.** Six were declared as "this version or any newer compatible one", which meant a fresh install could quietly pick up a release nobody had reviewed. One had already drifted three releases that way — declared at 6.6.3 and actually resolving to 6.9.1. All six are now fixed to the version that was already in use, so installs are reproducible and every future change is a visible edit.
+- **No dependency was advanced for currency.** Each of the six was checked separately for a newer release worth taking: four are already the newest available, one has a newer release that is 34 days old and has not settled, and two have newer major versions that are out of scope for this pass and need a separate decision. **Closing the drift and advancing versions are different questions, and the answer to the second was "nothing, this time."**
+
+### Fixed
+- **An ignore-file heading described five patterns as one thing they were not.** It labelled them "TypeScript build output", when only one of the five is written by the TypeScript compiler, two match nothing and cannot (that compiler is configured to emit no files at all), and two were left over from an older build mechanism entirely. Measured before touching anything: 1 match, 0, 0, 0, 0 — with a known-good pattern checked alongside returning 107, because a pattern that matches nothing and a check that is broken both print zero. The two that could never match were removed; the two misfiled ones were moved to the section they actually belong to and left in place, since an unused ignore line costs nothing while a wrongly removed one can put a generated file into a public repository.
+
+### Added
+- **A check that the notes on dependency pins cannot drift from the pins themselves.** Pins are recorded in a file format that allows no comments, so the explanations live in a neighbouring block — which creates a new way to go quietly wrong: a note describing a pin that no longer exists, or a pin with nothing explaining it. Both would look correct on the day they stopped being true. The build now fails if the two lists disagree in either direction, or if a note records a version without naming the advisory that justifies it. Each of the four assertions was verified by breaking it on purpose and confirming the named check failed.
+
 ## v0.18.28 (August 23, 2026)
 
 Security only — no functional, data, or interface changes. Thirteen of the project's fourteen known security advisories are cleared; the fourteenth is deliberately deferred one release, for the reason given below.
