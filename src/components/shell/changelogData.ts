@@ -13,6 +13,24 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.29',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Maintenance — the last known security advisory is closed, and every dependency is now pinned',
+        items: [
+          'The fourteenth and last security advisory is closed. The app now reports zero known advisories, down from fourteen at the start of this work. Nothing about how the app works, looks, or stores data changes.',
+          'Closing it needed a small update to the build tool, which widened the range of a supporting library it accepts \u2014 the tool\u2019s own statement that the newer line works, which is why no major version change was involved. The version taken was published in June and had already passed the 60-day settling period this project uses. A newer one clears the same advisory but is two weeks old; taking the oldest version that escapes is what made this the one fix in the whole effort that needed no exception.',
+          'Every dependency is now pinned to an exact version. Six were declared loosely \u2014 "this version or anything newer that is compatible" \u2014 which meant a fresh install could quietly pick up a release nobody had looked at. One had already drifted three releases that way. All six are now fixed to the version that was already in use, so installs are repeatable and any future change has to be written down.',
+          'None of the six was advanced to a newer release. Each was checked separately: four are already the newest available, one has a newer release that is barely a month old and has not settled, and two have newer major versions that are out of scope for this pass. Closing the drift and moving forward are different questions, and the answer to the second was "nothing, this time."',
+          'A heading in one of the project\u2019s configuration files described five entries as something they were not. Only one of the five does what the heading claimed; two could never match anything, and two were left over from an older mechanism. The two dead entries were removed and the two misfiled ones were moved to where they belong rather than deleted, because an unused entry of this kind costs nothing while a wrongly removed one can put a generated file into a public repository.',
+          'A new check keeps the explanations attached to their dependency pins. Those pins live in a file format that allows no comments, so the reasons sit in a neighbouring block \u2014 which creates a fresh way to go quietly wrong: a reason describing a pin that no longer exists, or a pin with nothing explaining it. Either would look right on the day it stopped being true. The build now refuses both, and each part of the check was verified by breaking it deliberately.',
+          'Dependency and tooling maintenance only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.28',
     date: '2026-08-23',
     sections: [
