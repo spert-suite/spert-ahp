@@ -13,6 +13,24 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.32',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Internal — mutation testing, and a recorded baseline for the calculation core',
+        items: [
+          'A second kind of measurement was added. It changes the code in small ways on purpose \u2014 flips a comparison, deletes a call, swaps an operator \u2014 and re-runs the tests. A change that no test objects to is a change the tests cannot see. Development tooling only: no application code was altered, and nothing about how the app works, looks, or stores data changes.',
+          'The result, recorded as a baseline rather than a target: of 928 usable changes made to the five calculation files, 632 were caught and 277 were not. Nothing was fixed in response, no threshold is set, and this measurement deliberately cannot fail a release.',
+          'The most useful thing it found is a limit on itself. Four places in the calculation core carry the same one-line safety floor. Last release showed by hand that three are genuinely load-bearing and the fourth is redundant \u2014 a duplicate of another, either one sufficient. This tool reports all four identically, because it only knows how to invert that line rather than remove it, and inverting it breaks everything either way. A passing result there means the inversion was caught, not that the floor is tested. That is written down so nobody later mistakes one for the other.',
+          'It also found something the by-hand pass could not reach. The calculation that derives priority weights repeats until it settles \u2014 forty-seven rounds on a deliberately inconsistent example. The loop runs, but the only thing checked about that example is a bound loose enough that a single round would satisfy it too. So the settling machinery is exercised without being checked: the same weakness the previous release fixed for individual safety checks, found this time inside a loop, where hand inspection had not looked.',
+          'One of the five files scores far below the others and is deliberately left unanalysed \u2014 78 uncaught changes against 46 caught. It is named in the record as the obvious first target for anyone continuing this work.',
+          'Three protections were added for the tool\u2019s working directory, which holds a full copy of the source with one file deliberately corrupted. It is now kept out of version control (this project is public), out of the code-style check, and out of the scoped test run. The middle one mattered more than it looks: with that directory present and not excluded, the code-style check went from 42 findings to 254, and every one was a failure to read the code at all \u2014 including the real files, not only the copies.',
+          'Development tooling only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.31',
     date: '2026-08-23',
     sections: [
