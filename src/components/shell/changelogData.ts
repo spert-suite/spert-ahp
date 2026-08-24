@@ -13,6 +13,23 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.31',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Internal — six safety checks in the calculation core are now genuinely tested',
+        items: [
+          'Six defensive checks inside the decision calculations are now actually tested. Each was already being run by the existing tests \u2014 it simply made no difference to any of them whether the check was there or not. Tests only: no application code changed, and nothing about how the app works, looks, or stores data changes.',
+          'Each of the six was verified by breaking the code on purpose. First by deleting the check and confirming a test fails; then by replacing it with a plausible but wrong version and confirming a test fails again. The second step matters: a test written only against deletion can end up tuned to the exercise rather than to the behaviour.',
+          'What the six protect, in plain terms: a criterion nobody compared still gets a weight instead of disappearing from the consistency figure; an unusable weight is left out of that figure rather than making it infinite; a set of weights with nothing usable in it reports "perfectly consistent" rather than reporting nothing; a panel where every voter is indifferent reports full agreement instead of displaying the text "NaN" on the results screen; an option scoring zero against every criterion stays distinguishable from one that was deleted; and a criterion judged overwhelmingly less important than the rest cannot collapse to a vanishingly small weight.',
+          'One existing test was removed and replaced. It was named after the safety check it claimed to verify, and it verified only that the check existed \u2014 it passed just the same with the check taken out, because its example never came close to the situation the check is for. It was also claiming a guarantee the design cannot give: the last entry in the list is deliberately set to whatever makes the total come to exactly one, so it is the single entry that guarantee cannot cover. It had been passing for three years because its example happened to put the awkward value first.',
+          'Four further checks were examined and deliberately left alone, because each turned out not to be testable rather than merely untested. Two can never be reached at all: one guards against a value a fixed table can never produce, the other against an input that is rejected earlier. Two more are redundant: a later check already rejects everything the earlier one would have caught. Writing a test for any of the four would have produced a test that passes for a reason unrelated to what its name says \u2014 which is precisely the problem this release removes, not one to add more of.',
+          'Tests only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.30',
     date: '2026-08-23',
     sections: [

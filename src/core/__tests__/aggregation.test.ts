@@ -171,6 +171,22 @@ describe('kendallW', () => {
     expect(W).toBeCloseTo(1.0, 4);
   });
 
+  it('every voter indifferent → W = 1.0 rather than NaN', () => {
+    // Kendall's W divides by K^2(n^3 - n) - K*tieCorrection. When every voter ties
+    // every item, the tie correction cancels that denominator to exactly 0 — a
+    // panel where nobody expressed a preference. Without the guard this returns
+    // 12*0/0 = NaN, which reaches the interface: synthesisPipeline stores it as
+    // concordance.kendallW and both ResultsPanel and SynthesisConfidenceBadge call
+    // .toFixed(3) on it, so the user is shown "NaN".
+    const W = kendallW([
+      [0.25, 0.25, 0.25, 0.25],
+      [0.25, 0.25, 0.25, 0.25],
+    ]);
+
+    expect(Number.isNaN(W)).toBe(false);
+    expect(W).toBe(1.0);
+  });
+
   it('two voters reversed rankings → W near 0', () => {
     const W = kendallW([
       [0.5, 0.3, 0.2],
