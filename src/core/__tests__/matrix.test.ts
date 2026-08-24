@@ -61,6 +61,33 @@ describe('checkConnectivity', () => {
 
 // ─── buildMatrix ─────────────────────────────────────────────────────
 
+describe('llsmWeights — the EPSILON floor', () => {
+  it('keeps an overwhelmingly-outranked criterion above zero', () => {
+    // Criterion 0 is judged a trillion times less important than criterion 1, which
+    // is itself judged a trillion times less important than criterion 2. The LLSM
+    // iteration drives weight 0 below the floor; the guard is what stops it landing
+    // on exactly 0, where it becomes indistinguishable from a criterion that was
+    // never in the model.
+    //
+    // `> 0` rather than `>= EPSILON` on purpose: the second names the constant the
+    // implementation happens to use, and would still pass if the floor were moved
+    // somewhere that does nothing.
+    const { weights } = llsmWeights(3, { '0,1': 1e-100, '1,2': 1e-100 });
+
+    // The floor bounds the vector's DYNAMIC RANGE, which is the property that
+    // matters: without it this weight comes back as 1.0e-150, and every product or
+    // quotient formed from the vector downstream is then 138 orders of magnitude
+    // apart from its neighbours. `> 0` does not discriminate that — 1e-150 is also
+    // greater than zero — which is why the bound is on the ratio instead.
+    const max = Math.max(...weights);
+    expect(Math.log10(max / weights[0]!)).toBeLessThan(100);
+    // The last entry is the slack that re-normalises the vector after every other
+    // entry has been raised to the floor. Both halves are the design, and asserting
+    // only the first would leave the second free to break silently.
+    expect(weights.reduce((a, b) => a + b, 0)).toBe(1.0);
+  });
+});
+
 describe('buildMatrix', () => {
   it('builds correct matrix from upper-triangle', () => {
     const m = buildMatrix(3, { '0,1': 3, '0,2': 5, '1,2': 7 });

@@ -25,6 +25,24 @@ describe('synthesize', () => {
     expect(scores.reduce((a, b) => a + b, 0)).toBe(1.0);
   });
 
+  it('keeps an alternative that scores zero on every criterion above zero', () => {
+    // Alternative 0 has a local priority of 0 against every criterion — it lost every
+    // pairwise comparison it appeared in. Without the floor its global score is
+    // exactly 0, which is the same value the vector would carry if the alternative
+    // had been deleted from the model rather than merely rated last.
+    //
+    // `> 0` rather than `>= EPSILON`: the latter names the implementation's constant
+    // instead of the property that matters.
+    const scores = synthesize([0.5, 0.5], [
+      [0, 0],
+      [1, 1],
+      [1, 1],
+    ]);
+
+    expect(scores[0]!).toBeGreaterThan(0);
+    expect(scores.reduce((a, b) => a + b, 0)).toBe(1.0);
+  });
+
   it('single alternative → [1.0]', () => {
     const scores = synthesize([0.5, 0.5], [[0.6, 0.4]]);
     expect(scores[0]).toBeCloseTo(1.0, 6);

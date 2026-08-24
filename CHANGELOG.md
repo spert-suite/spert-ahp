@@ -1,5 +1,20 @@
 # SPERT® AHP — Changelog
 
+## v0.18.31 (August 23, 2026)
+
+Tests only — no functional, data, or interface changes. **No application code was altered**, and the tests below were verified by deliberately breaking the code they cover.
+
+### Added
+- **Six defensive guards in the calculation core are now actually tested.** Each was already *executed* by the existing tests — it just made no difference to any of them whether it was there. Every one of the six was verified by removing it and confirming a test fails, and then by replacing it with a *plausible wrong version* rather than deleting it, and confirming a test fails again. Deletion alone is the weaker check: a test tuned only to deletion can be tuned to the check rather than to the behaviour.
+- **What each of the six protects**, stated as behaviour rather than as code: a criterion nobody compared still receives a weight instead of vanishing from the consistency calculation · an unusable weight is excluded from that calculation instead of producing an infinite result · a weight set with nothing usable in it reports the value meaning "perfectly consistent" instead of reporting nothing at all · **a panel in which every voter is indifferent reports full agreement instead of showing the user the text "NaN"** · an alternative that scores zero against every criterion is still distinguishable from one that was deleted · and a criterion judged overwhelmingly less important than the rest cannot collapse to a weight 138 orders of magnitude below its neighbours.
+
+### Fixed
+- **A test that named a guard, asserted the guard existed, and could not fail.** It was called "all entries >= EPSILON" and it checked that the calculation's own lower bound was applied. It passed identically with that bound removed, because its example never came near it. Worse, the guarantee it claimed **is not one the design can offer**: the last entry of the vector is deliberately set to whatever makes the total come to exactly 1, so it is the one entry the bound cannot hold. The test asserted an impossibility for three years and passed, because its example happened to put the awkward value first. It has been replaced with one that fails when the bound is removed.
+
+### Notes
+- **Four further guards were examined and deliberately left alone**, because each turned out not to be testable rather than merely untested — and knowing which is which is the point of the exercise. Two are unreachable: one sits behind a table of constants that can never take the value it checks for, the other behind a connectivity check that rejects the input it guards against before it can arrive. Two more are redundant: a later check in the same calculation already rejects everything the earlier one would have caught, so removing either changes nothing. **Writing a test for any of the four would have produced a test that passes for a reason unrelated to what its name claims** — which is the specific failure this release exists to remove, not to add more of.
+- **The count moved from 375 tests to 380**, and that is a smaller number than the work suggests because one existing test was replaced rather than added to. Leaving a misleading test in place beside a good one still leaves it passing and still leaves it asserting nothing.
+
 ## v0.18.30 (August 23, 2026)
 
 Development tooling only — no functional, data, or interface changes. **This adds a measurement, not a fix.** Nothing in the application was changed in response to what it found.
