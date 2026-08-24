@@ -1,5 +1,18 @@
 # SPERT® AHP — Changelog
 
+## v0.18.33 (August 23, 2026)
+
+Security only — no functional, data, or interface changes. **This closes four advisories that the previous release introduced.**
+
+### Security
+- **Four advisories, all arriving with the previous release's own tooling, are closed.** Installing the mutation-testing tool added 112 supporting packages, and three of them carried advisories between them — one high, two moderate. None of the three had been present before that install. `fast-uri` 3.1.2 → 3.1.5 clears three; `qs` 6.15.1 → 6.15.2 clears the fourth and, with it, a third package that was only flagged for depending on the old `qs`. That last point was verified rather than assumed: no major version change was needed anywhere.
+- **None of the three ever reached the application.** All are development-only dependencies of the mutation-testing tool, so none is part of the code served to a browser. That is why this is a correction rather than an incident — but it is still a correction, because the previous release reported a clean result and the result was no longer clean.
+
+### Notes
+- **The oldest fixed version was taken rather than the newest, and it mattered more here than anywhere.** The automatic tool would have installed `fast-uri` 3.1.6, published the same day this was written. The version taken, 3.1.5, is 23 days old and clears exactly the same three advisories. There was no fully settled option on that line, so this is recorded as an exception. **`qs` needed no exception at all**: 6.15.2 is 99 days old, the oldest that escapes and comfortably past the settling period — the outcome this rule exists to find.
+- **How the gap happened, recorded because the reason is more useful than the fact.** The previous release did audit all 112 new packages — for *settling time*, checking every publish date against the 60-day boundary, and reported none inside it. It did not audit them for *advisories*. Those are two different questions over the same list, one instruction covered both, and only one was run. The result was reported as though it covered both. The mistake was caught by re-reading the previous release's own summary after it had shipped, which is the last and weakest place to catch anything.
+- Both new pins carry written notes naming the specific advisories they escape and the range they must exceed, and the check added two releases ago — which fails the build if a pin and its note disagree — accepted them without modification.
+
 ## v0.18.32 (August 23, 2026)
 
 Development tooling only — no functional, data, or interface changes. **No application code was altered.** This adds a second measurement and records what it found.

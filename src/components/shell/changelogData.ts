@@ -13,6 +13,23 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.33',
+    date: '2026-08-23',
+    sections: [
+      {
+        title: 'Security — four advisories introduced by the previous release are closed',
+        items: [
+          'Installing the mutation-testing tool last release brought in 112 supporting packages, and three of them carried security advisories between them \u2014 one high, two moderate. None had been present beforehand. All four advisories are now closed, with no major version change anywhere. Security only: no functional, data, or interface changes.',
+          'None of the three ever reached the application. All are development-only dependencies of that tool, so none forms part of the code served to a browser. That is why this is a correction rather than an incident \u2014 but it is still a correction, because the previous release reported a clean result and the result was no longer clean.',
+          'One of the three was flagged only because it depended on an old version of another. Updating that other package cleared it too, which was verified rather than assumed \u2014 the alternative would have needed a major version change and a separate decision.',
+          'The oldest fixed version was taken rather than the newest, and it mattered more here than anywhere. The automatic tool would have installed a version published the same day this was written; the one taken is three weeks old and clears exactly the same three advisories. There was no fully settled option on that line, so it is recorded as an exception. The other package needed no exception at all: the oldest version that escapes its advisory is over three months old.',
+          'How the gap happened, written down because the reason is more useful than the fact. The previous release did check all 112 new packages \u2014 for settling time, confirming none was newer than the 60-day threshold. It did not check them for advisories. Those are two different questions about the same list; one instruction covered both, and only one was answered. It was caught by re-reading the previous release\u2019s own summary after it had shipped, which is the last and weakest place to catch anything.',
+          'Both new pins carry written notes naming the advisories they escape, and the check added two releases ago \u2014 which fails the build if a pin and its note disagree \u2014 accepted them unchanged.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.32',
     date: '2026-08-23',
     sections: [
