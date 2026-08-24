@@ -21,7 +21,7 @@ export default tseslint.config(
   // reports each as an unused disable directive. That is not a rule firing — no
   // rule below applies to a .js file — so enabling or disabling rules cannot
   // suppress it. Measured: lint 23 -> 26, which fails the shipgate ratchet.
-  { ignores: ['dist', 'coverage/**', '.claude/**'] },
+  { ignores: ['dist', 'coverage/**', '.stryker-tmp/**', '.claude/**'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],

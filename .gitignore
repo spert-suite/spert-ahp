@@ -1,6 +1,21 @@
 node_modules
 dist
 /coverage
+
+# Mutation testing output. BOTH are required and BOTH hold full copies of source.
+#
+# `.stryker-tmp` is Stryker's sandbox: a complete copy of the project with one
+# source file deliberately corrupted per mutant. A crashed run leaves it behind.
+# `reports/` holds the HTML and JSON reports, which embed the mutated source too.
+#
+# ⚠️ This repository is PUBLIC. An un-ignored sandbox full of deliberately-broken
+# source is one `git add -A` from being published — the same shape as `/coverage`
+# above, with worse contents. The dot in `.stryker-tmp` protects nothing: it is not
+# hidden from git, and ESLint 10's flat config traverses dot-directories (measured
+# here 2026-08-24 — a planted copy of aggregation.ts was linted and added its own
+# two complexity findings to the count).
+/.stryker-tmp
+/reports
 .DS_Store
 *.local
 .claude/

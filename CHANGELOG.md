@@ -1,5 +1,20 @@
 # SPERT® AHP — Changelog
 
+## v0.18.32 (August 23, 2026)
+
+Development tooling only — no functional, data, or interface changes. **No application code was altered.** This adds a second measurement and records what it found.
+
+### Added
+- **Mutation testing, and a recorded baseline of what it says about the calculation core.** The technique changes the code in small ways on purpose — flips a comparison, deletes a call, swaps an operator — and re-runs the tests. A change no test objects to is a change the tests cannot see. Run with `npm run mutate`; the full record, with every figure and the arithmetic behind it, is in `docs/mutation-baseline.md`.
+- **The result: of 928 usable changes made to the five calculation files, 632 were caught and 277 were not.** That is a baseline, not a target. Nothing was fixed in response to it, no threshold is set, and the check deliberately cannot fail a release.
+
+### Notes
+- **The most useful thing it found is a limit on itself.** Four places in the calculation core hold the same one-line safety floor. Three of them were shown by hand, in the previous release, to be genuinely load-bearing; the fourth was shown to be redundant — a duplicate of another, either one sufficient. **This tool reports all four identically.** It only knows how to invert that line, not to remove it, and inverting it breaks everything either way. So a passing result on that kind of line means the inversion was caught, not that the safety floor is tested. Recorded so that a future reader does not mistake the one for the other.
+- **It also found something the by-hand pass could not reach.** The iterative calculation that derives priority weights loops until it settles — 47 rounds on a deliberately inconsistent example. The loop runs, but the only thing checked about that example is a very loose bound that a single round would also satisfy. So the settling machinery is exercised without being checked. That is the same weakness the previous release fixed at the level of individual safety checks, found this time at the level of a loop, which is where hand inspection had not looked.
+- **One of the five files scores far below the others** and is deliberately left unanalysed here: 78 uncaught changes against 46 caught. It is named in the record as the obvious first target for anyone continuing this work.
+- **A setting was kept although it was measured to do nothing here.** A sister project found it changed that project's result dramatically; this project's version of the underlying tool differs by one patch release, and measuring it here — every individual change compared, not just the summary figure — found no difference at all. It stays because the failure it prevents is silent and reads as bad news about the tests rather than as a broken tool.
+- **Three protections were added for the tool's working directory**, which holds a complete copy of the source with one file deliberately corrupted. It was excluded from version control (this project is public), from the code-style check, and from the scoped test run. The middle one was not a nicety: with the working directory present and unexcluded, the code-style check went from 42 findings to **254**, and every one was a failure to read the code at all — including the real files, not just the copies. The release check would have failed reporting new problems, while naming neither the cause nor the directory.
+
 ## v0.18.31 (August 23, 2026)
 
 Tests only — no functional, data, or interface changes. **No application code was altered**, and the tests below were verified by deliberately breaking the code they cover.

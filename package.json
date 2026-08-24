@@ -1,6 +1,6 @@
 {
   "name": "spert-ahp",
-  "version": "0.18.31",
+  "version": "0.18.32",
   "private": true,
   "type": "module",
   "engines": {
@@ -15,6 +15,7 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "cc": "node scripts/measure-complexity.mjs",
+    "mutate": "node scripts/mutation-run.mjs",
     "shipgate": "node scripts/shipgate.mjs"
   },
   "dependencies": {
@@ -29,6 +30,9 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@stryker-mutator/core": "9.6.1",
+    "@stryker-mutator/typescript-checker": "9.6.1",
+    "@stryker-mutator/vitest-runner": "9.6.1",
     "@tailwindcss/vite": "4.2.4",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
