@@ -13,6 +13,27 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.34',
+    date: 'August 24, 2026',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'The time a decision records as \u201clast changed\u201d is now written as plain text, matching the rest of the SPERT\u00ae Suite. Nothing about how you build or score a decision changed, and no stored decision data was altered.',
+          'This app stored that time as a number of milliseconds while four of the seven suite apps store it as text, and the shared service that adds someone to a decision wrote a third form again. One of those apps reads decisions this one can share with, and formatting refuses rather than shrugs when handed the wrong form \u2014 so that app\u2019s project list could fail to draw a row after somebody was added. All thirteen places this app writes that time now write plain text, and the field\u2019s declared type was changed to match.',
+        ],
+      },
+      {
+        title: 'Internal',
+        items: [
+          'Three of the thirteen sit in functions where a single value is calculated once and used for both the \u201clast changed\u201d time and the \u201ccreated\u201d time. Changing that one value \u2014 the tidy-looking edit \u2014 would have silently converted the creation date too, which is read and is not part of this change. The change was made at each of the thirteen fields instead, leaving the shared value alone.',
+          'The safeguard that was supposed to catch that mistake did not cover two of the three places. The plan for this work said the type checker would reject the tidy edit because the creation date is still declared as a number. Measured: making that edit in the first two of the three functions compiles cleanly, because the expression feeding the creation date falls back to the shared value only when the existing one is missing \u2014 and since it can never be missing, the type checker never looks at the fallback. Only the third was caught, and by a different field entirely. Those three declarations now state their type explicitly, which turns the mistake into an error on the declaration line. Confirmed at all three.',
+          'Each of the thirteen is checked separately rather than one check for the file: twelve could be left unconverted and a single check would still pass, which is the shape of the fault being fixed. Reverting all thirteen fails thirteen of the fourteen checks; reverting one fails exactly one.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.33',
     date: '2026-08-23',
     sections: [

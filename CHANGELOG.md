@@ -1,5 +1,28 @@
 # SPERT® AHP — Changelog
 
+## v0.18.34 (August 24, 2026)
+
+The time a decision records as "last changed" is now written as plain text, matching the rest of the SPERT® Suite. Nothing about how you build or score a decision changed, and no stored decision data was altered.
+
+### Why
+This app stored that time as a number of milliseconds while four of the seven suite apps store it as text, and the shared service that adds someone to a decision wrote a third form again. One of those apps reads decisions this one can share with, and formatting refuses rather than shrugs when handed the wrong form — so that app's project list could fail to draw a row after somebody was added.
+
+All thirteen places this app writes that time now write plain text, and the field's declared type was changed to match.
+
+### The obvious way to make this change would have quietly corrupted a second field
+Three of the thirteen sit in functions where a single `now` value is calculated once and used for **both** the "last changed" time and the "created" time. Changing that one value — the tidy-looking edit — would have silently converted the creation date too, which is read, is not part of this change, and would then disagree with its own declared type.
+
+The change was made at each of the thirteen fields instead, leaving the shared value alone.
+
+⚠️ **The safeguard that was supposed to catch that mistake did not cover two of the three places.** The plan for this work said the type checker would reject the tidy edit because the creation date is still declared as a number. Measured: making that edit in the first two of the three functions **compiles cleanly**, because the expression feeding the creation date falls back to the shared value only when the existing one is missing — and since the existing one can never be missing, the type checker never looks at what it would have fallen back to. Only the third function was caught, and by a different field entirely.
+
+Those three declarations are now written with their type stated explicitly, which turns the mistake into an error on the declaration line itself. Confirmed at all three.
+
+### What was verified
+- Each of the thirteen is checked separately rather than one check for the file. Twelve could be left unconverted and a single check would still pass — which is the shape of the fault this whole change fixes.
+- The checks were run against the old code: reverting all thirteen fails thirteen of the fourteen, and reverting **one** fails exactly one. The fourteenth asserts the count itself, so it does not depend on the code.
+- One check was found to pass while its subject never ran, and now fails in that case rather than passing on an empty result.
+
 ## v0.18.33 (August 23, 2026)
 
 Security only — no functional, data, or interface changes. **This closes four advisories that the previous release introduced.**
