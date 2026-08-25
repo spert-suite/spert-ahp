@@ -61,7 +61,13 @@ interface FirestoreModelDoc {
   goal: string;
   createdBy: string;
   createdAt: number;
-  updatedAt: number;
+  /**
+   * ISO 8601 since v0.18.34 (Brief 19). ⚠️ `createdAt` above stays `number`
+   * DELIBERATELY: it is read, it is out of scope, and the type mismatch is
+   * what makes `tsc` catch the shared-`now` slip at the three sites where
+   * one `const now = Date.now()` feeds both fields.
+   */
+  updatedAt: string;
   status: ModelDoc['status'];
   completionTier: ModelDoc['completionTier'];
   synthesisStatus: ModelDoc['synthesisStatus'];
@@ -196,7 +202,14 @@ export class FirestoreAdapter implements StorageAdapter {
   // ─── Model CRUD ──────────────────────────────────────────────
 
   async createModel(modelId: string, metaDoc: ModelDoc, structureDoc: StructureDoc): Promise<void> {
-    const now = Date.now();
+    // ⚠️ ANNOTATED `: number` DELIBERATELY. This `now` feeds `createdAt` as
+    // well as (formerly) `updatedAt`, and Brief 19 converted the FIELD, not
+    // this variable. Measured 2026-08-24: without the annotation, flipping
+    // this line to a string compiles CLEAN at two of the three sites that
+    // do it, because `metaDoc.createdAt ?? now` narrows to `number` when
+    // `ModelDoc.createdAt` is non-optional — the `??` swallows the type.
+    // The annotation makes the slip an error at the declaration instead.
+    const now: number = Date.now();
     const nextOrder = await this.computeNextOrder();
     const payload: FirestoreModelDoc = {
       owner: this.uid,
@@ -205,7 +218,7 @@ export class FirestoreAdapter implements StorageAdapter {
       goal: metaDoc.goal,
       createdBy: this.uid,
       createdAt: metaDoc.createdAt ?? now,
-      updatedAt: now,
+      updatedAt: new Date().toISOString(),
       status: metaDoc.status,
       completionTier: metaDoc.completionTier,
       synthesisStatus: metaDoc.synthesisStatus,
@@ -249,7 +262,14 @@ export class FirestoreAdapter implements StorageAdapter {
    * responses, and — if present — synthesis into the monolithic document.
    */
   async createModelFromBundle(modelId: string, bundle: AHPExportBundle): Promise<void> {
-    const now = Date.now();
+    // ⚠️ ANNOTATED `: number` DELIBERATELY. This `now` feeds `createdAt` as
+    // well as (formerly) `updatedAt`, and Brief 19 converted the FIELD, not
+    // this variable. Measured 2026-08-24: without the annotation, flipping
+    // this line to a string compiles CLEAN at two of the three sites that
+    // do it, because `metaDoc.createdAt ?? now` narrows to `number` when
+    // `ModelDoc.createdAt` is non-optional — the `??` swallows the type.
+    // The annotation makes the slip an error at the declaration instead.
+    const now: number = Date.now();
     const nextOrder = await this.computeNextOrder();
     // Build members map from the collaborators array
     const members: Record<string, CollaboratorRole> = {};
@@ -274,7 +294,7 @@ export class FirestoreAdapter implements StorageAdapter {
       goal: bundle.meta.goal,
       createdBy: bundle.meta.createdBy,
       createdAt: bundle.meta.createdAt ?? now,
-      updatedAt: now,
+      updatedAt: new Date().toISOString(),
       status: bundle.meta.status,
       completionTier: bundle.meta.completionTier,
       synthesisStatus: bundle.meta.synthesisStatus,
@@ -295,7 +315,14 @@ export class FirestoreAdapter implements StorageAdapter {
   }
 
   async replaceModelFromBundle(existingModelId: string, bundle: AHPExportBundle): Promise<void> {
-    const now = Date.now();
+    // ⚠️ ANNOTATED `: number` DELIBERATELY. This `now` feeds `createdAt` as
+    // well as (formerly) `updatedAt`, and Brief 19 converted the FIELD, not
+    // this variable. Measured 2026-08-24: without the annotation, flipping
+    // this line to a string compiles CLEAN at two of the three sites that
+    // do it, because `metaDoc.createdAt ?? now` narrows to `number` when
+    // `ModelDoc.createdAt` is non-optional — the `??` swallows the type.
+    // The annotation makes the slip an error at the declaration instead.
+    const now: number = Date.now();
     // runTransaction matches the v0.15.0 audit-finding-#2 pattern used in
     // addCollaborator/updateCollaborator/removeCollaborator. Prevents a
     // lost-write race where a collaborator's saveComparisons between getDoc
@@ -364,7 +391,7 @@ export class FirestoreAdapter implements StorageAdapter {
         goal: bundle.meta.goal,
         createdBy: existingCreatedBy,
         createdAt: existingCreatedAt,
-        updatedAt: now,
+        updatedAt: new Date().toISOString(),
         status: bundle.meta.status,
         completionTier: bundle.meta.completionTier,
         synthesisStatus: bundle.meta.synthesisStatus,
@@ -394,7 +421,7 @@ export class FirestoreAdapter implements StorageAdapter {
   async updateModel(modelId: string, partialMeta: Partial<ModelDoc>): Promise<void> {
     // Build update payload — only include defined fields (Firestore rejects undefined)
     const update: Record<string, unknown> = {
-      updatedAt: Date.now(),
+      updatedAt: new Date().toISOString(),
       schemaVersion: CURRENT_SCHEMA_VERSION, // K2: every update carries current schema version
     };
     for (const [k, v] of Object.entries(partialMeta)) {
@@ -471,7 +498,7 @@ export class FirestoreAdapter implements StorageAdapter {
     orderedIds
       .filter((id) => ownedIds.has(id))
       .forEach((id, idx) => {
-        batch.update(docRef(id), { order: idx, updatedAt: Date.now() });
+        batch.update(docRef(id), { order: idx, updatedAt: new Date().toISOString() });
       });
     await batch.commit();
   }
@@ -489,7 +516,7 @@ export class FirestoreAdapter implements StorageAdapter {
       criteria: structureDoc.criteria,
       alternatives: structureDoc.alternatives,
       structureVersion: structureDoc.structureVersion,
-      updatedAt: Date.now(),
+      updatedAt: new Date().toISOString(),
       schemaVersion: CURRENT_SCHEMA_VERSION, // K2
     });
   }
@@ -523,7 +550,7 @@ export class FirestoreAdapter implements StorageAdapter {
       const update: Record<string, unknown> = {
         collaborators: filtered,
         [`members.${collaboratorDoc.userId}`]: collaboratorDoc.role,
-        updatedAt: Date.now(),
+        updatedAt: new Date().toISOString(),
       };
       if (!d.responses?.[collaboratorDoc.userId]) {
         update[`responses.${collaboratorDoc.userId}`] = {
@@ -570,7 +597,7 @@ export class FirestoreAdapter implements StorageAdapter {
       );
       const update: Record<string, unknown> = {
         collaborators: collabs,
-        updatedAt: Date.now(),
+        updatedAt: new Date().toISOString(),
       };
       if (partial.role) {
         update[`members.${userId}`] = partial.role;
@@ -607,7 +634,7 @@ export class FirestoreAdapter implements StorageAdapter {
       tx.update(ref, {
         collaborators: remaining,
         [`members.${userId}`]: deleteField(),
-        updatedAt: Date.now(),
+        updatedAt: new Date().toISOString(),
       });
     });
   }
@@ -624,7 +651,7 @@ export class FirestoreAdapter implements StorageAdapter {
   async createResponse(modelId: string, responseDoc: ResponseDoc): Promise<void> {
     await updateDoc(docRef(modelId), {
       [`responses.${responseDoc.userId}`]: responseDoc,
-      updatedAt: Date.now(),
+      updatedAt: new Date().toISOString(),
     });
   }
 
@@ -637,7 +664,7 @@ export class FirestoreAdapter implements StorageAdapter {
     const merged: ResponseDoc = { ...existing, ...partial, lastModifiedAt: Date.now() };
     await updateDoc(docRef(modelId), {
       [`responses.${userId}`]: merged,
-      updatedAt: Date.now(),
+      updatedAt: new Date().toISOString(),
     });
   }
 
@@ -677,7 +704,7 @@ export class FirestoreAdapter implements StorageAdapter {
 
     await updateDoc(docRef(modelId), {
       [`responses.${userId}`]: nextResponse,
-      updatedAt: Date.now(),
+      updatedAt: new Date().toISOString(),
     });
   }
 
@@ -714,7 +741,7 @@ export class FirestoreAdapter implements StorageAdapter {
 
     await updateDoc(docRef(modelId), {
       synthesis: serializeSynthesisForFirestore(synthesisId, docs, d.synthesis),
-      updatedAt: Date.now(),
+      updatedAt: new Date().toISOString(),
     });
   }
 
