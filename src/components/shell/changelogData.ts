@@ -13,8 +13,29 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.36',
+    date: '2026-09-03',
+    sections: [
+      {
+        title: 'Fixed',
+        items: [
+          'The changelog page showed the words \u201cInvalid date\u201d beside the two most recent versions. Both now show their real dates.',
+          'The page builds each date by splitting the stored text on hyphens and reading the pieces as year, month and day. Two entries had been written as \u201cAugust 24, 2026\u201d instead of \u201c2026-08-24\u201d. Splitting those on a hyphen yields one piece, the arithmetic produces nothing usable, and the page prints \u201cInvalid date\u201d where the date should be.',
+        ],
+      },
+      {
+        title: 'Internal',
+        items: [
+          'Why it happened twice. The newest entry is the natural template for the next one. The first malformed date shipped on August 24; the next release copied its shape ten days later. One bad entry reproduces itself, and the version most people look at is the one most likely to carry it.',
+          'Why nothing caught it. The existing changelog check compares which versions appear in each of the two places the changelog lives, and says nothing about dates, so both entries passed every check.',
+          'The new check runs every entry\u2019s date through the page\u2019s own formatting function and fails the build on any that comes back invalid. It calls the real function rather than a copy: a copy would have agreed with itself while the page went on showing the wrong thing. It carries a deliberate counter-test proving it still rejects the old broken format, so it cannot quietly lose its power later.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.35',
-    date: 'September 3, 2026',
+    date: '2026-09-03',
     sections: [
       {
         title: 'Changed',
@@ -36,7 +57,7 @@ export const CHANGELOG: ChangelogEntry[] = [
   },
   {
     version: '0.18.34',
-    date: 'August 24, 2026',
+    date: '2026-08-24',
     sections: [
       {
         title: 'Changed',
