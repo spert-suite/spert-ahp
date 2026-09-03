@@ -13,6 +13,26 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.37',
+    date: '2026-09-03',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'Release tooling only. Nothing about how you build or score a decision changed, and no stored decision data was altered.',
+          'The post-release check added two releases ago went out to the nine projects in the suite in two slightly different forms. Partway through that rollout one project\u2019s code-style tool objected to how a line in it was written, so the line was rewritten; the projects that had already received the file kept the first version.',
+        ],
+      },
+      {
+        title: 'Internal',
+        items: [
+          'The two forms behave identically \u2014 the corrected one computes a value before using it rather than nesting one expression inside another. These scripts are deliberately the same file in every project, so that none can quietly drift onto its own version of the release rules, and two forms in circulation is exactly the drift that arrangement exists to prevent. Every project now carries the corrected one.',
+          'The lesson kept rather than the fix: a file that must be identical everywhere should be corrected at its source and re-sent, not corrected where the problem happened to surface. Fixing it in place is what produced two forms.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.36',
     date: '2026-09-03',
     sections: [
