@@ -1,6 +1,6 @@
 {
   "name": "spert-ahp",
-  "version": "0.18.34",
+  "version": "0.18.35",
   "private": true,
   "type": "module",
   "engines": {
@@ -16,7 +16,8 @@
     "test:watch": "vitest",
     "cc": "node scripts/measure-complexity.mjs",
     "mutate": "node scripts/mutation-run.mjs",
-    "shipgate": "node scripts/shipgate.mjs"
+    "shipgate": "node scripts/shipgate.mjs",
+    "verify:sync": "node scripts/verify-sync.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
