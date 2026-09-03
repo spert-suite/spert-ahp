@@ -1,5 +1,21 @@
 # SPERT® AHP — Changelog
 
+## v0.18.36 (September 3, 2026)
+
+The changelog page showed the words "Invalid date" beside the two most recent versions. Both now show their real dates, and a check has been added so it cannot happen again.
+
+### What went wrong
+The page builds each date by splitting the stored text on hyphens and reading the pieces as year, month and day. Two entries had been written as "August 24, 2026" instead of "2026-08-24". Splitting those on a hyphen yields one piece, the arithmetic produces nothing usable, and the page prints "Invalid date" where the date should be.
+
+### Why it happened twice
+The newest entry is the natural template for the next one. The first malformed date shipped on August 24; the next release copied its shape ten days later. That is the shape of the trap — one bad entry reproduces itself, and the version most people look at is the one most likely to carry it.
+
+### Why nothing caught it
+The existing changelog check compares which versions appear in each of the two places the changelog lives. It says nothing about dates, so both entries passed every check.
+
+### The new check
+Every entry's date is now run through the page's own formatting function, and any that comes back as "Invalid date" fails the build. It calls the real function rather than a copy of it: a copy would have agreed with itself while the page went on showing the wrong thing. The check carries a deliberate counter-test proving it still rejects the old broken format, so it cannot quietly lose its power later.
+
 ## v0.18.35 (September 3, 2026)
 
 Release tooling only. Nothing about how you build or score a decision changed, and no stored decision data was altered.

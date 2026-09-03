@@ -3,12 +3,7 @@
 // See LICENSE file in the project root for full license text.
 
 import { CHANGELOG } from './changelogData';
-
-function formatDateLong(dateStr: string): string {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  const date = new Date(year!, month! - 1, day);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
+import { formatDateLong } from '../../lib/formatChangelogDate';
 
 export default function ChangelogPage() {
   return (
