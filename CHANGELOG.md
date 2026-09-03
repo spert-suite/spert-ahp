@@ -1,5 +1,27 @@
 # SPERT® AHP — Changelog
 
+## v0.18.35 (September 3, 2026)
+
+Release tooling only. Nothing about how you build or score a decision changed, and no stored decision data was altered.
+
+Releasing this app includes bringing the local copy of the project back into line with the copy on the server once a release has landed. Merging advances the server; it does not touch the local copy. If the local one is left behind, every report still reads as though the release arrived everywhere, and the next release is then built on the wrong starting point.
+
+### Why nothing had caught it
+Two mechanisms that look like they should have covered this could not. The pre-release check runs *before* a release is merged, so the condition it would be checking does not exist yet. The automated build cannot check it either, because it is a fact about the machine doing the release rather than about the project — a fresh automated copy has no view of anyone's working copy. The gap was invisible rather than merely unaddressed.
+
+### Two checks, at the two moments
+Before a release, the existing check now refuses to proceed if the local copy is behind the server, so a release is never cut on a stale starting point. Being *ahead* is normal and is not reported — that is what the release itself is.
+
+After a release, a new command compares the local copy, the local record of the server, and the server's own answer, and reports which one disagrees. Three sources rather than two, because the first two can be stale together and agree with each other while both are wrong.
+
+### What the pre-release check deliberately does not do
+It does not require a clean working copy, and must not start to. It runs partway through a release, after the version and release-notes edits are made and before they are committed, so uncommitted work is expected at that exact moment. Requiring cleanliness there would fail every release. That check belongs to the after-the-merge command, where it is correct.
+
+### Why it compares fingerprints instead of reading a command's output
+The step had once been reported as done elsewhere in the suite on the strength of a command's closing message, where the informative line had been trimmed away. The message that remained — that everything was already current — cannot distinguish *checked, nothing to do* from *never checked*. Both checks read the resulting state and compare fingerprints instead. Running a command is not the same as checking its effect.
+
+The release script is shared and deliberately identical across the suite; this repo now carries the same version as the others.
+
 ## v0.18.34 (August 24, 2026)
 
 The time a decision records as "last changed" is now written as plain text, matching the rest of the SPERT® Suite. Nothing about how you build or score a decision changed, and no stored decision data was altered.
