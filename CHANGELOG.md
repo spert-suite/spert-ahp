@@ -1,5 +1,17 @@
 # SPERT® AHP — Changelog
 
+## v0.18.37 (September 3, 2026)
+
+Release tooling only. Nothing about how you build or score a decision changed, and no stored decision data was altered.
+
+The post-release check added two releases ago went out to the nine projects in the suite in two slightly different forms. Partway through that rollout one project's code-style tool objected to how a line in it was written, so the line was rewritten. The projects that had already received the file kept the first version.
+
+### Why one line matters here
+The two forms behave identically — the difference is that the corrected one computes a value before using it rather than nesting one expression inside another. These scripts are deliberately the same file in every project, so that none can quietly drift onto its own version of the release rules, and two forms in circulation is exactly the drift that arrangement exists to prevent. Every project now carries the corrected one.
+
+### The lesson kept rather than the fix
+A file that must be identical everywhere should be corrected at its source and re-sent, not corrected where the problem happened to surface. Fixing it in place is what produced two forms.
+
 ## v0.18.36 (September 3, 2026)
 
 The changelog page showed the words "Invalid date" beside the two most recent versions. Both now show their real dates, and a check has been added so it cannot happen again.
