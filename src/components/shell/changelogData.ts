@@ -13,6 +13,27 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.39',
+    date: '2026-09-13',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'Licence text only. Nothing about how you build or score a decision changed, and no stored decision data was altered.',
+          'The licence&rsquo;s trademark clause now names famousdavis, LLC. The SPERT® Suite business — the spertsuite.com website, the hosting it runs on, and the SPERT®, Statistical PERT® and Estimation Made Easy® trademarks — transferred to that company on September 12, 2026. The clause still named the previous owner while the newly published Terms of Service named the company, so two published legal documents disagreed about who owns the marks.',
+        ],
+      },
+      {
+        title: 'Notes',
+        items: [
+          '⚠️ Copyright in the software did not transfer, and the licence still says so. It is held by William W. Davis, MSPM, PMP personally and licensed to the company. The clauses requiring his name to be kept as the author, and withholding his name from promotional use, are unchanged — as are the copyright notices in every source file and the credit shown on the About page. Two different names now appear in the licence and both are correct: the company operates the service, the individual owns the code.',
+          'Nothing you may do with this software changed. It is still the GNU General Public License v3 with the same additional terms — the code is free to take, change and share, a modified version must still be released under a different name, and credit to the original author must still travel with it.',
+          'The licence is one file copied byte-for-byte into eight projects, each of which pins a checksum of it, so changing it in one place alone fails the other seven at once. All eight were updated in the same pass and are released separately.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.38',
     date: '2026-09-03',
     sections: [
