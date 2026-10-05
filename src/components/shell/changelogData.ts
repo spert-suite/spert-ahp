@@ -13,6 +13,20 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.41',
+    date: '2026-10-05',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'The SPERT® Suite Terms of Service and Privacy Policy have new editions, version 1.3 of each, effective October 5, 2026. When you sign in, SPERT® AHP asks you to accept them again: the acceptance it had recorded was for the April 5, 2026 editions, and from now on it records the edition you actually accept.',
+          'None of the changes alters what SPERT® AHP collects or does. The documents now describe database backups (daily backups kept for up to 98 days, point-in-time recovery for up to 7 days), that data is stored at rest in the United States, and project sharing and invitation emails.',
+          'The copies of the Terms and Privacy Policy kept in this project’s repository still held the April 5 editions, three re-issues behind. Both now match the October 5 editions published on spertsuite.com.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.40',
     date: '2026-09-13',
     sections: [

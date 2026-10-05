@@ -5,7 +5,7 @@
 // Lightweight ToS / Privacy Policy consent state for cloud sign-in.
 // Mirrors the pattern used by SPERT-CFD (src/lib/consent.ts).
 
-export const TOS_VERSION = '04-05-2026';
+export const TOS_VERSION = '10-05-2026';
 export const APP_ID = 'spert-ahp';
 export const TOS_URL = 'https://spertsuite.com/TOS.pdf';
 export const PRIVACY_URL = 'https://spertsuite.com/PRIVACY.pdf';
