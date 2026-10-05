@@ -1,5 +1,13 @@
 # SPERT® AHP — Changelog
 
+## v0.18.41 (October 5, 2026)
+
+The SPERT® Suite **Terms of Service** and **Privacy Policy** have new editions — **version 1.3 of each, effective October 5, 2026** — published at the same spertsuite.com addresses SPERT® AHP already links to.
+
+- **When you sign in, SPERT® AHP asks you to accept the new Terms and Privacy Policy again.** The acceptance it had recorded was for the April 5, 2026 editions (`TOS_VERSION` was `'04-05-2026'` and had never moved); it is now `'10-05-2026'`, so the record names the edition you actually accept.
+- None of the changes alters what SPERT® AHP collects or does. The documents now describe database backups (daily backups kept for up to 98 days, point-in-time recovery for up to 7 days), that data is stored at rest in the United States, and project sharing and invitation emails.
+- **The copies kept in this repository were out of date.** `legal/TOS.pdf` and `legal/PRIVACY.pdf` still held the April 5 editions, three re-issues behind. Both are now byte-identical to the October 5 editions on spertsuite.com.
+
 ## v0.18.40 (September 13, 2026)
 
 Nothing about the app changed. A comment in a release check only: no application code, no behaviour, no appearance, no data.
