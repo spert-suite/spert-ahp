@@ -13,6 +13,20 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.43',
+    date: '2026-10-25',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'The SPERT® Suite Terms of Service and Privacy Policy have new editions, version 1.4 of each, effective October 26, 2026. When you sign in, SPERT® AHP asks you to accept them again; if you are already signed in, it signs you out once and asks when you sign back in.',
+          'The new editions replace a personal contact address with the SPERT® Suite’s own addresses (privacy@, security@ and contact@spertsuite.com), name Microsoft as the provider for email to those addresses, and clarify several disclosures.',
+          'The copies of the Terms and Privacy Policy kept in this project’s repository now match the October 26 editions published on spertsuite.com.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.42',
     date: '2026-10-25',
     sections: [

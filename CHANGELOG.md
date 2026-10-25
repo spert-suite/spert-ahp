@@ -1,5 +1,13 @@
 # SPERT® AHP — Changelog
 
+## v0.18.43 (October 25, 2026)
+
+The SPERT® Suite **Terms of Service** and **Privacy Policy** have new editions — **version 1.4 of each, effective October 26, 2026** — published at the same spertsuite.com addresses SPERT® AHP already links to.
+
+- **When you sign in, SPERT® AHP asks you to accept the new Terms and Privacy Policy again.** If you are already signed in, it signs you out once and asks when you sign back in. The acceptance it records moves from the October 5, 2026 editions (`TOS_VERSION` `'10-05-2026'`) to `'10-26-2026'`.
+- The new editions replace a personal contact address with the SPERT® Suite's own addresses (privacy@, security@ and contact@spertsuite.com), name Microsoft as the provider for email to those addresses, and clarify several disclosures.
+- `legal/TOS.pdf` and `legal/PRIVACY.pdf` in this repository are replaced with the October 26 editions, byte-identical to spertsuite.com.
+
 ## v0.18.42 (October 25, 2026)
 
 Security hardening only — nothing about what SPERT® AHP collects or does changed.
