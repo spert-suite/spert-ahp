@@ -1,5 +1,12 @@
 # SPERT® AHP — Changelog
 
+## v0.18.42 (October 25, 2026)
+
+Security hardening only — nothing about what SPERT® AHP collects or does changed.
+
+- The site now sends a stronger HTTP Strict-Transport-Security header (`max-age=63072000; includeSubDomains; preload`), telling browsers to use HTTPS for this site and its subdomains and making it eligible for the browser preload list. This matches the other SPERT® Suite apps.
+- The release workflow now declares least-privilege permissions (read-only access to the repository).
+
 ## v0.18.41 (October 5, 2026)
 
 The SPERT® Suite **Terms of Service** and **Privacy Policy** have new editions — **version 1.3 of each, effective October 5, 2026** — published at the same spertsuite.com addresses SPERT® AHP already links to.
