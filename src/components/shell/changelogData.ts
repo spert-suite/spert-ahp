@@ -13,6 +13,18 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.44',
+    date: '2026-10-25',
+    sections: [
+      {
+        title: 'Added',
+        items: [
+          'SPERT® AHP now publishes a security.txt file (RFC 9116), so a security researcher can find where to report a vulnerability: by email to security@spertsuite.com, or privately through SPERT® AHP’s GitHub repository. Nothing about how the app works, looks or stores data changed.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.43',
     date: '2026-10-25',
     sections: [

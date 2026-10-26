@@ -1,5 +1,10 @@
 # SPERT® AHP — Changelog
 
+## v0.18.44 (October 25, 2026)
+
+- **SPERT® AHP now publishes a security.txt file (RFC 9116)**, so a security researcher can find where to report a vulnerability: by email to security@spertsuite.com, or privately through SPERT® AHP’s GitHub repository. Nothing about how the app works, looks or stores data changed.
+- A new test checks the file on every release, and fails a month before the file expires, as a reminder to renew it.
+
 ## v0.18.43 (October 25, 2026)
 
 The SPERT® Suite **Terms of Service** and **Privacy Policy** have new editions — **version 1.4 of each, effective October 26, 2026** — published at the same spertsuite.com addresses SPERT® AHP already links to.
