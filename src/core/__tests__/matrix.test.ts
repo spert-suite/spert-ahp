@@ -9,6 +9,7 @@ import {
   selectComparisonsForTier,
   llsmWeights,
   ConnectivityError,
+  comparisonsWithin,
 } from '../math/matrix';
 import { EPSILON, ERROR_CODES } from '../models/constants';
 import type { CompletionTier } from '../../types/ahp';
@@ -311,5 +312,25 @@ describe('selectComparisonsForTier — linear for tiers 2 and 3, same result', (
     expect(selectComparisonsForTier(20000, 2)).toHaveLength(30000);
     expect(selectComparisonsForTier(20000, 3)).toHaveLength(40000);
     expect(performance.now() - t0).toBeLessThan(2000);
+  });
+});
+
+// v0.18.45 (W4): only keys that name a pair of an n-item matrix reach the maths.
+describe('comparisonsWithin', () => {
+  it('keeps exactly the keys with integer 0 <= i < j < n', () => {
+    const stored = { '0,1': 2, '1,2': 3, '0,2': 4, '0,3': 5, '2,1': 6, '1,1': 7, '-1,2': 8, '0.5,2': 9, 'a,b': 10, '0,99999': 11 };
+    expect(comparisonsWithin(3, stored)).toEqual({ '0,1': 2, '1,2': 3, '0,2': 4 });
+  });
+
+  it('keeps the last pair of the matrix and drops the first past it', () => {
+    expect(comparisonsWithin(4, { '2,3': 1, '3,4': 2 })).toEqual({ '2,3': 1 });
+    expect(comparisonsWithin(0, { '0,1': 1 })).toEqual({});
+  });
+
+  it('returns a new map and leaves the stored one untouched', () => {
+    const stored = { '0,1': 2, '0,9': 3 };
+    const out = comparisonsWithin(2, stored);
+    expect(out).not.toBe(stored);
+    expect(stored).toEqual({ '0,1': 2, '0,9': 3 });
   });
 });
