@@ -8,7 +8,8 @@ import ComparisonMatrix from './ComparisonMatrix';
 import ConsistencyBadge from './ConsistencyBadge';
 import ConsistencyAdvisor from './ConsistencyAdvisor';
 import type { useMatrix } from '../../hooks/useMatrix';
-import { selectComparisonsForTier } from '../../core/math/matrix';
+import { selectComparisonsForTier, comparisonsWithin } from '../../core/math/matrix';
+import { MAX_ADVISOR_JUDGMENTS, exceedsComparisonLimit } from '../../core/models/constants';
 import { rankJudgments, findTransitivityViolations } from '../../core/math/consistency';
 import type {
   CompletionTier,
@@ -35,8 +36,10 @@ function computeAdvisorData(
 ): AdvisorData {
   const empty: AdvisorData = { ranked: [], violations: [], impliedMap: new Map() };
   if (!cr || cr.cr === null || cr.cr <= 0.10) return empty;
-  const ranked = rankJudgments(n, comparisons, tier);
-  const violations = findTransitivityViolations(n, comparisons, tier);
+  const inRange = comparisonsWithin(n, comparisons);
+  if (Object.keys(inRange).length > MAX_ADVISOR_JUDGMENTS) return empty;
+  const ranked = rankJudgments(n, inRange, tier);
+  const violations = findTransitivityViolations(n, inRange, tier);
   const impliedMap = new Map<string, number>();
   for (const r of ranked) impliedMap.set(`${r.i},${r.j}`, r.impliedValue);
   return { ranked, violations, impliedMap };
@@ -70,7 +73,9 @@ export default function PairwiseComparisonLayer({
   criterionLabel,
 }: PairwiseComparisonLayerProps) {
   const n = items.length;
-  const pairs = selectComparisonsForTier(n, tier, 0);
+  // ComparisonPanel refuses an oversized layer first; this keeps the layer safe on its own.
+  const pairs = exceedsComparisonLimit(n, tier) ? [] : selectComparisonsForTier(n, tier, 0);
+  const advisorSkipped = Object.keys(matrix.comparisons).length > MAX_ADVISOR_JUDGMENTS;
   const completedCount = Object.keys(matrix.comparisons).length;
   const tierComplete = completedCount >= pairs.length;
 
@@ -96,6 +101,12 @@ export default function PairwiseComparisonLayer({
   return (
     <div className="space-y-6">
       {tierComplete && matrix.cr && <ConsistencyBadge cr={matrix.cr} tier={tier} />}
+
+      {tierComplete && advisorSkipped && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Consistency suggestions are shown for layers with up to {MAX_ADVISOR_JUDGMENTS} judgments.
+        </p>
+      )}
 
       {tierComplete && (
         <ConsistencyAdvisor

@@ -4,10 +4,11 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { registerSignOutCleanup } from '../lib/signOutCleanupRegistry'; // Pass 4
-import { llsmWeights, checkConnectivity, buildMatrix } from '../core/math/matrix';
+import { llsmWeights, checkConnectivity, buildMatrix, comparisonsWithin } from '../core/math/matrix';
 import { consistencyRatio } from '../core/math/consistency';
 import { principalEigenvector } from '../core/math/eigenvector';
 import type { ComparisonMap, CompletionTier, ConnectivityResult, ConsistencyResult } from '../types/ahp';
+import { exceedsComparisonLimit } from '../core/models/constants';
 
 // D2 (Pass 3): The pagehide/beforeunload flush handler eliminates data-loss risk
 // on tab close. The debounce window is kept at 1500ms — reducing it would increase
@@ -60,7 +61,17 @@ export function useMatrix({
   layerRef.current = layer;
   /* eslint-enable react-hooks/refs */
 
-  const recompute = useCallback((comp: ComparisonMap) => {
+  const recompute = useCallback((stored: ComparisonMap) => {
+    // Only keys that fit this matrix reach the maths — see comparisonsWithin.
+    const comp = comparisonsWithin(n, stored);
+    if (exceedsComparisonLimit(n, tier)) {
+      // Too large to compare — the panel says so; nothing is computed.
+      setWeights(null);
+      setCR(null);
+      setConnectivity({ connected: false, missingLinks: [] });
+      setConverged(true);
+      return;
+    }
     if (n <= 1) {
       setWeights([1.0]);
       setCR({ cr: 0, isAcceptable: true, lambdaMax: 1, ci: 0, confidenceLabel: '' });

@@ -11,9 +11,10 @@ import {
 } from '../core/math/aggregation';
 import { consistencyRatio } from '../core/math/consistency';
 import { synthesize } from '../core/math/synthesis';
-import { llsmWeights, buildMatrix } from '../core/math/matrix';
+import { llsmWeights, buildMatrix, comparisonsWithin } from '../core/math/matrix';
 import { principalEigenvector } from '../core/math/eigenvector';
 import { hashObject } from './hashObject';
+import { MAX_COMPARISON_ITEMS, exceedsComparisonLimit } from '../core/models/constants';
 import type {
   ComparisonMap,
   ConcordanceInterpretation,
@@ -61,6 +62,9 @@ export async function computeSynthesis(
   const n = structure.criteria.length;
   const numAlts = structure.alternatives.length;
   const completionTier = model.completionTier;
+  if (exceedsComparisonLimit(n, completionTier) || exceedsComparisonLimit(numAlts, completionTier)) {
+    throw new Error(`This decision has more than ${MAX_COMPARISON_ITEMS} decision factors or alternatives, which is more than can be synthesized at this completion tier.`);
+  }
 
   const collabs = await storage.getCollaborators(modelId);
   const votingMembers: VotingMember[] = collabs.map((c) => ({
@@ -82,7 +86,8 @@ export async function computeSynthesis(
     voterTimestamps[collab.userId] = response.lastModifiedAt;
     isVotingSnapshot[collab.userId] = collab.isVoting;
 
-    const critComp = await storage.getComparisons(modelId, collab.userId, 'criteria');
+    // Only keys that fit each matrix reach the maths — see comparisonsWithin.
+    const critComp = comparisonsWithin(n, await storage.getComparisons(modelId, collab.userId, 'criteria'));
     allCriteriaComparisons.push({ userId: collab.userId, comparisons: critComp });
 
     individualCR[collab.userId] = {
@@ -93,7 +98,7 @@ export async function computeSynthesis(
       if (!allAlternativeComparisons[criterion.id]) {
         allAlternativeComparisons[criterion.id] = [];
       }
-      const altComp = await storage.getComparisons(modelId, collab.userId, criterion.id);
+      const altComp = comparisonsWithin(numAlts, await storage.getComparisons(modelId, collab.userId, criterion.id));
       allAlternativeComparisons[criterion.id]!.push({
         userId: collab.userId,
         comparisons: altComp,

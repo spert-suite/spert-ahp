@@ -14,6 +14,8 @@ import ResultsPanel from './components/results/ResultsPanel';
 import ManagePanel from './components/settings/ManagePanel';
 import GlobalSettingsPanel from './components/settings/GlobalSettingsPanel';
 import InvitationBanner from './components/shell/InvitationBanner';
+import CloudLoadNotice from './components/shell/CloudLoadNotice';
+import ContentErrorBoundary from './components/shell/ContentErrorBoundary';
 import { useUserId } from './hooks/useUserId';
 import { useAHP } from './hooks/useAHP';
 import { useTheme } from './hooks/useTheme';
@@ -157,7 +159,10 @@ export default function App() {
       <main className="flex-1 p-6">
         <div className={isTab ? 'max-w-4xl mx-auto' : ''}>
           <InvitationBanner />
-          {renderContent()}
+          {ahpState.modelId && <CloudLoadNotice modelId={ahpState.modelId} title={ahpState.model?.title ?? ''} />}
+          <ContentErrorBoundary resetKey={`${activePage}:${ahpState.modelId ?? ''}`} onBackToDashboard={handleNavigateHome}>
+            {renderContent()}
+          </ContentErrorBoundary>
         </div>
       </main>
 

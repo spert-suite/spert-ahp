@@ -11,7 +11,7 @@ import {
   createResponseDoc,
 } from '../core/models/AHPModel';
 import {
-  deserializeSynthesisFromFirestore,
+  tryDeserializeSynthesis,
   type FirestoreSynthesis,
 } from '../storage/firestoreSynthesisCodec';
 import { computeSynthesis } from './synthesisPipeline';
@@ -329,12 +329,10 @@ export function useAHP(userId: string): UseAHPReturn {
 
       // Synthesis
       const synthesis = d['synthesis'] as FirestoreSynthesis | null;
-      if (synthesis && synthesis.synthesisId === meta.publishedSynthesisId) {
-        dispatch({
-          type: 'SET_SYNTHESIS',
-          payload: deserializeSynthesisFromFirestore(synthesis),
-        });
-      }
+      const decoded = synthesis && synthesis.synthesisId === meta.publishedSynthesisId
+        ? tryDeserializeSynthesis(synthesis)
+        : null;
+      if (decoded) dispatch({ type: 'SET_SYNTHESIS', payload: decoded });
     });
     return unsub;
   }, [state.modelId, storage]);
