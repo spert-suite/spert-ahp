@@ -3,6 +3,7 @@
 // See LICENSE file in the project root for full license text.
 
 import { useState, useCallback } from 'react';
+import { MAX_COMPARISON_ITEMS, exceedsComparisonLimit } from '../../core/models/constants';
 import PairwiseComparisonLayer from './PairwiseComparisonLayer';
 import { useMatrix } from '../../hooks/useMatrix';
 import type {
@@ -108,6 +109,15 @@ export default function ComparisonPanel({ ahpState, userId }: ComparisonPanelPro
     return (
       <p className="text-gray-500 dark:text-gray-400">
         Add at least 2 decision factors and 2 alternatives in Decisions.
+      </p>
+    );
+  }
+
+  if (exceedsComparisonLimit(criteriaItems.length, tier) || exceedsComparisonLimit(alternativeItems.length, tier)) {
+    return (
+      <p className="text-gray-500 dark:text-gray-400">
+        This decision has more than {MAX_COMPARISON_ITEMS} decision factors or alternatives, which is more than can be
+        compared at this completion tier. Remove some in Decisions, or use the Quick tier, to compare them.
       </p>
     );
   }

@@ -10,6 +10,8 @@ import {
   clearSignOutCleanupRegistry,
 } from '../../lib/signOutCleanupRegistry';
 import type { ComparisonMap } from '../../types/ahp';
+import { MAX_COMPARISON_ITEMS } from '../../core/models/constants';
+import { computeSynthesis } from '../synthesisPipeline';
 
 describe('useMatrix', () => {
   afterEach(() => {
@@ -233,5 +235,42 @@ describe('useMatrix', () => {
     currentInitial = { '0,1': 9 };
     rerender({ init: currentInitial });
     expect(result.current.comparisons['0,1']).toBe(9);
+  });
+});
+
+// v0.18.45 (W4): a layer past MAX_COMPARISON_ITEMS computes nothing (the
+// Compare tab explains the limit), and a stored key outside the matrix no
+// longer reaches the maths.
+describe('useMatrix — oversized layers and out-of-range keys', () => {
+  it('computes nothing for a layer past MAX_COMPARISON_ITEMS', () => {
+    const n = MAX_COMPARISON_ITEMS + 1;
+    const star: Record<string, number> = {};
+    for (let k = 1; k < n; k++) star[`0,${k}`] = 2;
+    const { result } = renderHook(() => useMatrix({ n, tier: 4, layer: 'criteria', initialComparisons: star }));
+    expect(result.current.weights).toBeNull();
+    expect(result.current.cr).toBeNull();
+  });
+
+  it('still computes a Quick (tier 1) layer past the bound — its judgments are linear', () => {
+    const n = MAX_COMPARISON_ITEMS + 1;
+    const star: Record<string, number> = {};
+    for (let k = 1; k < n; k++) star[`0,${k}`] = 2;
+    const { result } = renderHook(() => useMatrix({ n, tier: 1, layer: 'criteria', initialComparisons: star }));
+    expect(result.current.weights).toHaveLength(n);
+  });
+
+  it('computes weights from the keys that fit, ignoring one past the end', () => {
+    const { result } = renderHook(() => useMatrix({ n: 3, tier: 1, layer: 'criteria', initialComparisons: { '0,1': 2, '0,2': 3, '0,99999': 4 } }));
+    expect(result.current.weights).toHaveLength(3);
+  });
+});
+
+describe('computeSynthesis — oversized decisions', () => {
+  it('explains the limit instead of computing', async () => {
+    const items = (n: number) => Array.from({ length: n }, (_, i) => ({ id: `i${i}`, label: `I${i}`, description: '' }));
+    await expect(computeSynthesis({
+      modelId: 'm', structure: { criteria: items(MAX_COMPARISON_ITEMS + 1), alternatives: items(2), structureVersion: 1 },
+      model: { completionTier: 4 }, storage: {},
+    } as never)).rejects.toThrow(`more than ${MAX_COMPARISON_ITEMS}`);
   });
 });

@@ -20,9 +20,11 @@ import {
 import { db } from '../lib/firebase';
 import { callRevokeInvite, callResendInvite, callUpdateInvite } from '../lib/callables';
 import { createResponseDoc } from '../core/models/AHPModel';
+import { guardModelDoc, roleOf } from './cloudReadGuard';
+import { reportGuardedLoad } from '../lib/cloudLoadNotices';
 import {
   serializeSynthesisForFirestore,
-  deserializeSynthesisFromFirestore,
+  tryDeserializeSynthesis,
   type FirestoreSynthesis,
 } from './firestoreSynthesisCodec';
 import type {
@@ -160,6 +162,18 @@ function requireDb() {
 
 function docRef(modelId: string) {
   return doc(requireDb(), `${NAMESPACE}_projects`, modelId);
+}
+
+/**
+ * Every read of a model document goes through the shape guard before use
+ * (cloudReadGuard.ts). `notify` raises the on-screen notice — set only where a
+ * model is being opened (getModel, subscribeModel), not on the dashboard list
+ * or the helper reads, so one bad document produces one notice.
+ */
+function guarded(modelId: string, data: unknown, notify: boolean): FirestoreModelDoc {
+  const { doc, setAside } = guardModelDoc(data);
+  reportGuardedLoad(modelId, setAside, notify);
+  return doc as unknown as FirestoreModelDoc;
 }
 
 function unwrapMeta(d: FirestoreModelDoc): ModelDoc {
@@ -414,7 +428,7 @@ export class FirestoreAdapter implements StorageAdapter {
   async getModel(modelId: string): Promise<{ meta: ModelDoc; structure: StructureDoc } | null> {
     const snap = await getDoc(docRef(modelId));
     if (!snap.exists()) return null;
-    const d = snap.data() as FirestoreModelDoc;
+    const d = guarded(modelId, snap.data(), true);
     return { meta: unwrapMeta(d), structure: unwrapStructure(d) };
   }
 
@@ -455,10 +469,10 @@ export class FirestoreAdapter implements StorageAdapter {
     const snap = await getDocs(q);
     const entries: ModelIndexEntry[] = [];
     snap.forEach((s) => {
-      const d = s.data() as FirestoreModelDoc;
+      const d = guarded(s.id, s.data(), false);
       // Defensive default to 'viewer' — most-restrictive — should never fire
       // because the query filter requires members[this.uid] in (owner/editor/viewer).
-      const role = (d.members?.[this.uid] ?? 'viewer') as CollaboratorRole;
+      const role = roleOf(d.members, this.uid);
       entries.push({
         modelId: s.id,
         title: d.title,
@@ -508,7 +522,7 @@ export class FirestoreAdapter implements StorageAdapter {
   async getStructure(modelId: string): Promise<StructureDoc | null> {
     const snap = await getDoc(docRef(modelId));
     if (!snap.exists()) return null;
-    return unwrapStructure(snap.data() as FirestoreModelDoc);
+    return unwrapStructure(guarded(modelId, snap.data(), false));
   }
 
   async updateStructure(modelId: string, structureDoc: StructureDoc): Promise<void> {
@@ -570,7 +584,7 @@ export class FirestoreAdapter implements StorageAdapter {
   async getCollaborators(modelId: string): Promise<CollaboratorDoc[]> {
     const snap = await getDoc(docRef(modelId));
     if (!snap.exists()) return [];
-    const d = snap.data() as FirestoreModelDoc;
+    const d = guarded(modelId, snap.data(), false);
     return d.collaborators ?? [];
   }
 
@@ -644,7 +658,7 @@ export class FirestoreAdapter implements StorageAdapter {
   async getResponse(modelId: string, userId: string): Promise<ResponseDoc | null> {
     const snap = await getDoc(docRef(modelId));
     if (!snap.exists()) return null;
-    const d = snap.data() as FirestoreModelDoc;
+    const d = guarded(modelId, snap.data(), false);
     return d.responses?.[userId] ?? null;
   }
 
@@ -711,7 +725,7 @@ export class FirestoreAdapter implements StorageAdapter {
   async getComparisons(modelId: string, userId: string, layer: string): Promise<ComparisonMap> {
     const snap = await getDoc(docRef(modelId));
     if (!snap.exists()) return {};
-    const d = snap.data() as FirestoreModelDoc;
+    const d = guarded(modelId, snap.data(), false);
     const response = d.responses?.[userId];
     if (!response) return {};
 
@@ -748,9 +762,9 @@ export class FirestoreAdapter implements StorageAdapter {
   async getSynthesis(modelId: string, synthesisId: string): Promise<SynthesisBundle | null> {
     const snap = await getDoc(docRef(modelId));
     if (!snap.exists()) return null;
-    const d = snap.data() as FirestoreModelDoc;
+    const d = guarded(modelId, snap.data(), false);
     if (!d.synthesis || d.synthesis.synthesisId !== synthesisId) return null;
-    return deserializeSynthesisFromFirestore(d.synthesis);
+    return tryDeserializeSynthesis(d.synthesis);
   }
 
   // ─── Subscriptions ─────────────────────────────────────────
@@ -763,7 +777,7 @@ export class FirestoreAdapter implements StorageAdapter {
         // Echo prevention — don't fire on our own unflushed writes (GanttApp lesson 14)
         if (snap.metadata.hasPendingWrites) return;
         if (!snap.exists()) return;
-        callback(snap.data());
+        callback(guarded(modelId, snap.data(), true));
       },
       (err) => {
         const code = (err as { code?: string }).code ?? 'unknown';

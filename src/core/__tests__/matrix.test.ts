@@ -277,3 +277,39 @@ describe('ConnectivityError', () => {
     expect(err instanceof Error).toBe(true);
   });
 });
+
+// v0.18.45 (W4): tiers 2 and 3 stop enumerating pairs once they have enough,
+// instead of building all n(n-1)/2 and slicing. The pre-change algorithm is kept
+// here as the oracle: same pairs, same order, for every tier and size.
+function selectComparisonsForTierBefore(n: number, tier: 1 | 2 | 3 | 4, anchorIndex = 0): [number, number][] {
+  if (n <= 1) return [];
+  const target = Math.min({ 1: n - 1, 2: Math.ceil(1.5 * n), 3: Math.ceil(2.0 * n), 4: (n * (n - 1)) / 2 }[tier], (n * (n - 1)) / 2);
+  const star: [number, number][] = [];
+  for (let k = 0; k < n; k++) if (k !== anchorIndex) star.push([Math.min(anchorIndex, k), Math.max(anchorIndex, k)]);
+  if (tier === 1 || target <= star.length) return star.slice(0, target);
+  const all: [number, number][] = [];
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) all.push([i, j]);
+  if (tier === 4) return all;
+  const starSet = new Set(star.map(([i, j]) => `${i},${j}`));
+  return [...star, ...all.filter(([i, j]) => !starSet.has(`${i},${j}`)).slice(0, target - star.length)];
+}
+
+describe('selectComparisonsForTier — linear for tiers 2 and 3, same result', () => {
+  it('matches the previous algorithm for every tier, n = 0..40 and several anchors', () => {
+    for (let n = 0; n <= 40; n++) {
+      for (const tier of [1, 2, 3, 4] as const) {
+        for (const anchor of [0, Math.floor(n / 2), Math.max(0, n - 1)]) {
+          expect(selectComparisonsForTier(n, tier, anchor)).toEqual(selectComparisonsForTierBefore(n, tier, anchor));
+        }
+      }
+    }
+  });
+
+  it('selects tier 2 and 3 pairs for 20,000 items without enumerating every pair', () => {
+    // 2e8 pairs before the change (over 10 s in the W4 probe); a few ms now.
+    const t0 = performance.now();
+    expect(selectComparisonsForTier(20000, 2)).toHaveLength(30000);
+    expect(selectComparisonsForTier(20000, 3)).toHaveLength(40000);
+    expect(performance.now() - t0).toBeLessThan(2000);
+  });
+});

@@ -23,6 +23,24 @@ export class ConnectivityError extends Error {
   }
 }
 
+/**
+ * The comparisons that fit an n-item matrix: integer keys 0 <= i < j < n.
+ *
+ * Every function in this file indexes arrays by a key's i and j, so a key past
+ * the end threw. A stored response is written by its own voter (or, while
+ * project creation is unrestricted, by whoever created the project), and a
+ * key from a larger structure is not part of this matrix anyway. Applied where
+ * the maths is called (useMatrix, computeSynthesis); stored data is untouched.
+ */
+export function comparisonsWithin(n: number, comparisons: ComparisonMap): ComparisonMap {
+  const out: ComparisonMap = {};
+  for (const [key, value] of Object.entries(comparisons)) {
+    const [i, j] = key.split(',').map(Number) as [number, number];
+    if (Number.isInteger(i) && Number.isInteger(j) && i >= 0 && i < j && j < n) out[key] = value;
+  }
+  return out;
+}
+
 export function checkConnectivity(n: number, observedComparisons: ComparisonMap): ConnectivityResult {
   if (n <= 1) {
     return { connected: true, missingLinks: [] };
@@ -136,18 +154,21 @@ export function selectComparisonsForTier(n: number, tier: CompletionTier, anchor
     return allPairs;
   }
 
+  // Stop as soon as enough extra pairs are found. Enumerating every one of the
+  // n(n-1)/2 pairs first and slicing afterwards made tiers 2 and 3 quadratic in
+  // the item count, which nothing caps at the write site. Same pairs, same order.
   const starSet = new Set(starPairs.map(([i, j]) => `${i},${j}`));
+  const needed = targetCount - starPairs.length;
   const extraPairs: ComparisonPair[] = [];
-  for (let i = 0; i < n; i++) {
-    for (let j = i + 1; j < n; j++) {
+  for (let i = 0; i < n && extraPairs.length < needed; i++) {
+    for (let j = i + 1; j < n && extraPairs.length < needed; j++) {
       if (!starSet.has(`${i},${j}`)) {
         extraPairs.push([i, j]);
       }
     }
   }
 
-  const needed = targetCount - starPairs.length;
-  return [...starPairs, ...extraPairs.slice(0, needed)];
+  return [...starPairs, ...extraPairs];
 }
 
 interface Neighbor {

@@ -13,6 +13,22 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.45',
+    date: '2026-10-29',
+    sections: [
+      {
+        title: 'Security',
+        items: [
+          'Decisions loaded from cloud storage are now checked before SPERT® AHP displays them. If part of a decision is in a form SPERT® AHP could never have written, that part is left out and the rest of the decision opens as normal, where before the Dashboard or the decision could fail to display. When this happens in a decision you open, a notice names the decision. Nothing SPERT® AHP itself saves is affected.',
+          'A page that cannot be displayed now shows its own message, with the header, the tabs and a way back to the Dashboard still available. Before, the whole app could go blank.',
+          'Comparisons that do not match a pair in the current decision are left out when it opens, instead of stopping the calculation.',
+          'The Compare tab stays responsive on large decisions. The Balanced and Thorough tiers now pick their comparison pairs without listing every possible pair first; the pairs chosen are the same. At the Balanced, Thorough and Complete tiers, a layer with more than 300 decision factors or alternatives is now explained rather than computed (the Quick tier has no limit), and consistency suggestions are shown for layers with up to 450 judgments.',
+          'New tests check that a decision built by SPERT® AHP’s own code loads with nothing changed, pass malformed decisions through the real cloud loading code, and compare the new pair selection with the previous one.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.44',
     date: '2026-10-25',
     sections: [

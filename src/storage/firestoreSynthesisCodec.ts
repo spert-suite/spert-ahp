@@ -82,3 +82,18 @@ export function deserializeSynthesisFromFirestore(raw: FirestoreSynthesis): Synt
     diagnostics: raw.diagnostics,
   };
 }
+
+/**
+ * `deserializeSynthesisFromFirestore`, or null when the stored synthesis cannot
+ * be read. The nested arrays are JSON strings, and `JSON.parse` throws on a
+ * malformed one — inside a snapshot callback, or on opening Results. A synthesis
+ * that cannot be read is treated as absent; the owner can recompute it.
+ */
+export function tryDeserializeSynthesis(raw: FirestoreSynthesis): SynthesisBundle | null {
+  try {
+    return deserializeSynthesisFromFirestore(raw);
+  } catch {
+    console.warn('[cloud-load-guard] stored synthesis could not be read');
+    return null;
+  }
+}
