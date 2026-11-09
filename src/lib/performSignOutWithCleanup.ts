@@ -25,10 +25,16 @@ const MODEL_INDEX_KEY = 'ahp/modelIndex';
 //     workspace continuity for repeated local→cloud migrations on the
 //     same device.
 //   - spert-theme — user UI preference, not user-scoped.
+//   - spert_firstRun_seen, ahp/suppressLocalStorageWarning — the two
+//     app-wide notice preferences (terms notice dismissed; local-mode
+//     caution turned off in Settings). Per-browser preferences, kept on
+//     purpose to match MyScrumBudget and Story Map, which preserve theirs
+//     (v0.18.46). Defined in lib/appNotices.ts.
 // All other ahp/* keys ARE cleared (consent, attribution, migration
-// flag) — see v0.12.2 audit F5. The sessionStorage invite token is
-// also cleared so the next user on the same tab does not inherit a
-// stale pre_auth landing state (v0.15.0 audit finding #5).
+// flag) — see v0.12.2 audit F5; the ahp/* keys listed above are the
+// deliberate exceptions. The sessionStorage invite token is also
+// cleared so the next user on the same tab does not inherit a stale
+// pre_auth landing state (v0.15.0 audit finding #5).
 
 /**
  * Clear all local project data (model index + all per-model keys).

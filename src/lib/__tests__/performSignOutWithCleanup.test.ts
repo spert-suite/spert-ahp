@@ -90,6 +90,21 @@ describe('performSignOutWithCleanup', () => {
     expect(signOutSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps both notice preferences, in local and cloud mode (v0.18.46)', async () => {
+    for (const mode of ['local', 'cloud']) {
+      localStorage.clear();
+      localStorage.setItem('ahp/storageMode', mode);
+      localStorage.setItem('spert_firstRun_seen', 'true');
+      localStorage.setItem('ahp/suppressLocalStorageWarning', 'true');
+      localStorage.setItem('ahp/exportAttribution', JSON.stringify({ name: 'A', identifier: 'a' }));
+      await performSignOutWithCleanup();
+      // Control: the same run still clears a per-user key, so the run happened.
+      expect(localStorage.getItem('ahp/exportAttribution')).toBeNull();
+      expect(localStorage.getItem('spert_firstRun_seen')).toBe('true');
+      expect(localStorage.getItem('ahp/suppressLocalStorageWarning')).toBe('true');
+    }
+  });
+
   it('clears the sessionStorage invite token (v0.15.0 finding #5)', async () => {
     sessionStorage.setItem('spert:pendingInviteToken', 'test-token-abc');
 

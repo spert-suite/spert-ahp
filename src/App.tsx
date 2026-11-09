@@ -15,6 +15,8 @@ import ManagePanel from './components/settings/ManagePanel';
 import GlobalSettingsPanel from './components/settings/GlobalSettingsPanel';
 import InvitationBanner from './components/shell/InvitationBanner';
 import CloudLoadNotice from './components/shell/CloudLoadNotice';
+import FirstRunBanner from './components/shell/FirstRunBanner';
+import LocalStorageCaution from './components/shell/LocalStorageCaution';
 import ContentErrorBoundary from './components/shell/ContentErrorBoundary';
 import { useUserId } from './hooks/useUserId';
 import { useAHP } from './hooks/useAHP';
@@ -158,7 +160,11 @@ export default function App() {
 
       <main className="flex-1 p-6">
         <div className={isTab ? 'max-w-4xl mx-auto' : ''}>
+          {/* App-wide notices, in suite order: invitation, terms, caution.
+              Other app-wide banners (CloudLoadNotice) follow the group. */}
           <InvitationBanner />
+          <FirstRunBanner />
+          <LocalStorageCaution />
           {ahpState.modelId && <CloudLoadNotice modelId={ahpState.modelId} title={ahpState.model?.title ?? ''} />}
           <ContentErrorBoundary resetKey={`${activePage}:${ahpState.modelId ?? ''}`} onBackToDashboard={handleNavigateHome}>
             {renderContent()}

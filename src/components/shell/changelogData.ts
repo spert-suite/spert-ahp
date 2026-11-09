@@ -13,6 +13,22 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.46',
+    date: '2026-11-08',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'Dashboard toolbar now matches the rest of the SPERT® Suite. The buttons beside the Decisions heading now read, left to right, Export All · Import · New Decision, the same order and wording as the other SPERT® apps. Each has an icon, and the “+” in front of New Decision is replaced by a plus icon. Every button is still disabled in exactly the same situations as before.',
+          'A terms notice for every visitor. SPERT® AHP now shows the SPERT® Suite terms notice, with links to the Terms of Service and Privacy Policy, until you click Got it. Before, the terms appeared only when signing in to Cloud Storage and in the footer.',
+          'A caution while your data is stored only in this browser. While SPERT® AHP keeps your decisions in this browser, an amber caution reminds you to export at the end of every session. Got it hides it until you next open the app. To turn it off for good, clear the new Settings option “Warn me on startup when using local storage”.',
+          'Screen-reader and voice-control names. Export All and Import now announce what they do (“Export all decisions as JSON”, “Import decisions from JSON”); while they show Exporting…, Reading… or Importing…, they announce that text instead.',
+          'New tests check the toolbar’s order, names, icons and every disabled state, both notices and what Got it does, the Settings option, and that sign-out keeps both notice preferences.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.45',
     date: '2026-10-29',
     sections: [

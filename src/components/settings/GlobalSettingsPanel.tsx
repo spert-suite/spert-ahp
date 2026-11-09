@@ -2,8 +2,13 @@
 // Licensed under the GNU General Public License v3.0.
 // See LICENSE file in the project root for full license text.
 
-import { useId, useState } from 'react';
+import { useId, useState, useSyncExternalStore } from 'react';
 import StorageSection from './StorageSection';
+import {
+  isLocalStorageWarningSuppressed,
+  setLocalStorageWarningSuppressed,
+  subscribeNotices,
+} from '../../lib/appNotices';
 
 export const ATTRIBUTION_KEY = 'ahp/exportAttribution';
 
@@ -31,6 +36,9 @@ export default function GlobalSettingsPanel() {
   const fieldId = useId();
   const nameId = `${fieldId}-name`;
   const identifierId = `${fieldId}-identifier`;
+  const warnId = `${fieldId}-warn-local-storage`;
+  const warnDescId = `${warnId}-desc`;
+  const warnSuppressed = useSyncExternalStore(subscribeNotices, isLocalStorageWarningSuppressed);
 
   const handleAttributionChange = (field: keyof ExportAttribution, value: string) => {
     const next = { ...attribution, [field]: value };
@@ -45,6 +53,29 @@ export default function GlobalSettingsPanel() {
       <section className="space-y-3">
         <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Cloud Storage</h3>
         <StorageSection />
+      </section>
+
+      <section className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-3">
+        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Notifications</h3>
+        <div className="flex items-start gap-2">
+          <input
+            id={warnId}
+            name="warnLocalStorage"
+            type="checkbox"
+            checked={!warnSuppressed}
+            onChange={(e) => setLocalStorageWarningSuppressed(!e.target.checked)}
+            aria-describedby={warnDescId}
+            className="mt-0.5 h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500"
+          />
+          <div>
+            <label htmlFor={warnId} className="block text-xs font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+              Warn me on startup when using local storage
+            </label>
+            <p id={warnDescId} className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              Shows a caution banner each time the app opens while your data is stored locally in this browser.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-3">
