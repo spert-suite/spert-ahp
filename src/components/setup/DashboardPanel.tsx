@@ -12,6 +12,8 @@ import { useImportState } from '../../hooks/useImportState';
 import ImportPreviewSection from './ImportPreviewSection';
 import { TrashIcon } from '../icons/TrashIcon';
 import { DragHandleIcon } from '../icons/DragHandleIcon';
+import { ToolbarIcon } from '../icons/ToolbarIcon';
+import { TOOLBAR_ICON_PATHS } from '../icons/toolbarIconPaths';
 import type { UseAHPReturn, ModelIndexEntry } from '../../types/ahp';
 
 interface DashboardPanelProps {
@@ -141,38 +143,48 @@ export default function DashboardPanel({ ahpState, userId, onDecisionOpened }: D
     void handleReorder(orderedIds);
   });
 
+  const importBusyLabel =
+    importState.phase.tag === 'applying'
+      ? 'Importing…'
+      : importState.phase.tag === 'parsing'
+        ? 'Reading…'
+        : null;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Decisions</h2>
-        <div className="flex gap-2">
-          <button
-            onClick={importState.handleImportClick}
-            disabled={importState.isBusy || importState.isCloudNotReady}
-            aria-busy={
-              importState.phase.tag === 'applying' ||
-              importState.phase.tag === 'parsing'
-            }
-            className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
-          >
-            {importState.phase.tag === 'applying'
-              ? 'Importing…'
-              : importState.phase.tag === 'parsing'
-                ? 'Reading…'
-                : 'Import'}
-          </button>
+        {/* Toolbar order is suite-wide (GanttApp's ProjectsToolbar is the
+            reference): Export All · Import · New Decision. Every button is
+            always rendered; gates disable, never hide. While a progress label
+            shows, the aria-label is dropped so the accessible name stays the
+            visible text (WCAG 2.5.3, Label in Name). */}
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => { void handleExportAll(); }}
             disabled={savedModels.length === 0 || isExportingAll}
-            className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+            aria-label={isExportingAll ? undefined : 'Export all decisions as JSON'}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
           >
+            <ToolbarIcon d={TOOLBAR_ICON_PATHS.export} size={16} />
             {isExportingAll ? 'Exporting…' : 'Export All'}
           </button>
           <button
-            onClick={handleCreate}
-            className="px-4 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700"
+            onClick={importState.handleImportClick}
+            disabled={importState.isBusy || importState.isCloudNotReady}
+            aria-busy={importBusyLabel !== null}
+            aria-label={importBusyLabel === null ? 'Import decisions from JSON' : undefined}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
           >
-            + New Decision
+            <ToolbarIcon d={TOOLBAR_ICON_PATHS.import} size={16} />
+            {importBusyLabel ?? 'Import'}
+          </button>
+          <button
+            onClick={handleCreate}
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700"
+          >
+            <ToolbarIcon d={TOOLBAR_ICON_PATHS.plus} size={16} />
+            New Decision
           </button>
           <input
             ref={importState.fileInputRef}
@@ -285,7 +297,7 @@ export default function DashboardPanel({ ahpState, userId, onDecisionOpened }: D
       ) : (
         <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            No saved decisions yet. Click <span className="font-medium">+ New Decision</span> to start.
+            No saved decisions yet. Click <span className="font-medium">New Decision</span> to start.
           </p>
         </div>
       )}
