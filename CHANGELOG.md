@@ -1,5 +1,20 @@
 # SPERT® AHP — Changelog
 
+## v0.18.48 (November 16, 2026)
+
+Maintenance — the charting library `recharts` is updated within its major version, 3.8.1 → 3.10.1. Both charts that use it, the sensitivity line chart and the voter comparison radar chart, were checked in a browser before and after the update and draw identically. No security advisory is involved.
+
+### Internal — charting
+- **`recharts` updated 3.8.1 → 3.10.1, within major version 3.** Version 3.10.1 has been public since July 25, 2026, more than 60 days.
+- **Both charts were checked in a browser before and after the update, in the light and dark themes, and draw identically.** The sensitivity line chart was checked for each decision factor, including its hover tooltip; the voter comparison radar chart was checked with two voters, including its legend. This was measured from the page itself, not only by eye: every line, tooltip value, radar shape and legend position is the same in both builds. The radar chart appears only when a decision has at least two voters, so it was checked on a local test decision with a second, made-up voter added.
+- **Inside `recharts`, two of its own components move:** `immer` 10 → 11 (a major version) and `reselect` 5.1 → 5.2, and a second, older copy of `immer` is no longer installed. SPERT® AHP uses neither directly.
+- **The download grows by 23.5 kB (5.3 kB compressed)**, from 1,275.9 kB to 1,299.4 kB. The stylesheet is unchanged, byte for byte.
+
+### Notes
+- **The sensitivity chart’s crossover markers were not rendering before this update, and are not rendering after it.** The chart is meant to mark each point where two alternatives’ lines cross; with `recharts` 3.8.1 and with 3.10.1 alike it draws none. The cause is in SPERT® AHP’s own chart setup, not in `recharts`, and it is listed for a separate fix.
+- **No security advisory is involved, and none is added.** 25 distinct advisories are open before this release and 25 after.
+- Lockfile movement, measured rather than eyeballed: **3 entries changed, 0 added, 1 removed** (the older copy of `immer`), all part of the app’s runtime code.
+
 ## v0.18.47 (November 15, 2026)
 
 Security only — no functional, data, or interface changes. Twenty-four security advisories are closed, every one in a tool used to build, test or check SPERT® AHP.
