@@ -13,6 +13,24 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.47',
+    date: '2026-11-15',
+    sections: [
+      {
+        title: 'Security — twenty-four advisories closed in development tools',
+        items: [
+          'Twenty-four security advisories are closed. Every one is in a tool used to build, test or check SPERT® AHP, not in the app itself: undici (10), fast-uri (6), brace-expansion (3), qs (2), browserslist (2) and baseline-browser-mapping (1). Every version taken has been public for at least 60 days, and none is a major version change.',
+          'The app served to browsers is unchanged by these updates, and that was checked. The app was built before the updates and again after them, before this release’s own version number was added, and every file in the two builds is identical.',
+          'Three of the updates are deliberate partial steps. For undici, fast-uri and qs, every version that would close all of their advisories is less than 60 days old, so this release takes the newest version that is not. The fast-uri step closes all five of its high-severity advisories. The 13 advisories left across the three wait for their fixed versions to clear the 60-day window, between December 13 and 18.',
+          'Two advisories are acknowledged rather than fixed. Both are in grpc-js, a networking component installed with Firebase, which is not part of the code sent to browsers: a production build contains none of it, and both advisories concern it acting as a server, which this app never does. No Firebase release accepts the fixed version yet; this is reopened when one does.',
+          'The written notes explaining three version pins were out of date, and are corrected. Beside each pinned version the project records which advisories it escapes and why. Three of the six notes no longer matched: one said no advisory affected a version that two advisories now flag, and two named advisories that had already been cleared. The check that guards these notes confirms that each one names an advisory, but cannot tell a current note from a stale one.',
+          'Counted as distinct advisories, 49 are open before this release and 25 after. npm’s own summary counts flagged packages instead and moves only from 31 to 28, which is why the distinct count is the measure.',
+          'Security only. No functional, data, or interface changes.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.46',
     date: '2026-11-08',
     sections: [
