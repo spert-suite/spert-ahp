@@ -13,6 +13,28 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.49',
+    date: '2026-11-16',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'The default font list changes. Tailwind CSS 4.3.3, which generates the app’s stylesheet, names each platform’s system fonts explicitly, instead of relying on generic system-font names, so that Chinese, Japanese and Korean text follows the page’s language setting on Windows. SPERT® AHP sets no font of its own, so it inherits the new list. Checked on macOS in Chromium: seven screens, in the light and dark themes, are identical pixel for pixel before and after the update, and text measures the same width under the old and new lists, Chinese, Japanese and Korean text included. Safari, Firefox, Windows and Linux were not checked.',
+        ],
+      },
+      {
+        title: 'Maintenance — Tailwind CSS updated 4.2.4 → 4.3.3, with three test libraries',
+        items: [
+          'Tailwind CSS is updated within its major version, 4.2.4 → 4.3.3. Version 4.3.3 has been public since July 16, 2026, more than 60 days.',
+          'Three libraries used only by the tests are updated with it: testing-library/react 16.3.2 → 16.3.3, testing-library/jest-dom 6.9.1 → 6.10.0 and jsdom 29.1.0 → 29.1.1. None of them is part of the app sent to browsers. All 480 tests pass unchanged.',
+          'The stylesheet shrinks from 40.74 kB to 40.57 kB. Apart from the font list, its changes are equivalent: 16 spacing rules are rewritten to the same values in a simpler form, Firefox’s focus ring now skips embedded frames, and two rules that nothing in the app used are no longer generated. The app’s JavaScript is unchanged, byte for byte.',
+          'One test run timed out on a heavily loaded computer, and is recorded rather than dropped. A check that starts the code-quality tool took just over its 5-second limit while other work was running on the machine. The same check timed out in the same way with the previous library versions, and on a quiet machine all 480 tests pass.',
+          'No security advisory is involved, and none is added: 25 distinct advisories are open before this release and 25 after. Every version taken has been public for at least 60 days.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.48',
     date: '2026-11-16',
     sections: [
