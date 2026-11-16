@@ -18,14 +18,14 @@ import CloudLoadNotice from './components/shell/CloudLoadNotice';
 import FirstRunBanner from './components/shell/FirstRunBanner';
 import LocalStorageCaution from './components/shell/LocalStorageCaution';
 import ContentErrorBoundary from './components/shell/ContentErrorBoundary';
+import AppTabBar from './components/shell/AppTabBar';
+import { TABS, type TabName } from './components/shell/appTabs';
 import { useUserId } from './hooks/useUserId';
 import { useAHP } from './hooks/useAHP';
 import { useTheme } from './hooks/useTheme';
 import { useStorage } from './contexts/StorageContext';
 import { registerSignOutCleanup } from './lib/signOutCleanupRegistry';
 
-const TABS = ['Dashboard', 'Decision', 'Compare', 'Results', 'Manage', 'Settings'] as const;
-type TabName = typeof TABS[number];
 type Page = TabName | 'About' | 'Changelog';
 
 export default function App() {
@@ -74,10 +74,6 @@ export default function App() {
   }, [ahpState.modelId, activePage]);
 
   const isTab = (TABS as readonly string[]).includes(activePage);
-
-  // The Manage tab only appears when a model is loaded. Compare and Results
-  // intentionally remain always-visible (they render gated messages internally).
-  const visibleTabs = TABS.filter((tab) => tab !== 'Manage' || !!ahpState.modelId);
 
   const handleNavigateHome = () => {
     ahpState.closeModel();
@@ -129,34 +125,11 @@ export default function App() {
         onNavigateHome={handleNavigateHome}
       />
 
-      <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-5xl mx-auto flex px-6">
-          {visibleTabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActivePage(tab)}
-              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                activePage === tab
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-500'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-          <button
-            key="About"
-            onClick={() => setActivePage('About')}
-            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activePage === 'About'
-                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-500'
-            }`}
-          >
-            About
-          </button>
-        </div>
-      </nav>
+      <AppTabBar
+        activePage={activePage}
+        modelOpen={!!ahpState.modelId}
+        onSelect={setActivePage}
+      />
 
       <main className="flex-1 p-6">
         <div className={isTab ? 'max-w-4xl mx-auto' : ''}>

@@ -13,6 +13,27 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.50',
+    date: '2026-11-16',
+    sections: [
+      {
+        title: 'Added',
+        items: [
+          'A Help Center link at the end of the tab bar opens the SPERT® Suite Help Center, with the AHP guide, in a new tab. It sits after About, as quiet grey text underlined on hover, and is a link rather than a tab: it never takes the tabs’ underline or active colour.',
+          'Screen readers announce it as “Help Center (opens in a new tab)”. The arrow is hidden from them, and the words “(opens in a new tab)” are read aloud but not shown. It opens with noopener and noreferrer, so the Help Center page gets no hold on the AHP tab and is not told which page you came from.',
+        ],
+      },
+      {
+        title: 'Notes',
+        items: [
+          'The tab bar moved out of App.tsx into its own component, AppTabBar, unchanged, so it could be tested on its own. Nothing tested it before. 32 new tests, from 480 to 512: 21 check the Help Center link and 11 pin the tabs’ existing behaviour. Each new test was seen to fail on purpose against ten deliberate breakages, while the older tests stayed green.',
+          'Checked in a browser at desktop widths, in the light and dark themes: every tab still opens its own page, with and without a decision open. Text contrast measured 4.84:1 (light) and 5.64:1 (dark), above the 4.5:1 that WCAG AA asks for. The browser used does not open a new tab from an automated click, so the opened Help Center tab itself was not seen there.',
+          'No dependency, Firestore or legal-document change.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.49',
     date: '2026-11-16',
     sections: [

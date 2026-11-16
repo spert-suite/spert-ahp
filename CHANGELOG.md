@@ -1,5 +1,21 @@
 # SPERT® AHP — Changelog
 
+## v0.18.50 (November 16, 2026)
+
+A Help Center link at the end of the tab bar opens the SPERT® Suite Help Center, with the AHP guide, in a new tab.
+
+### Added
+- **A "Help Center ↗" link at the right-hand end of the tab bar, after About.** It opens `https://spertsuite.com/help/ahp` in a new tab. It is a link, not a tab: it never takes the tabs' underline or blue active colour, and Tab moves to it straight after About. It is quiet grey text, underlined on hover.
+- **Screen readers announce it as "Help Center (opens in a new tab)".** The arrow is hidden from them, and the words "(opens in a new tab)" are read aloud but not shown. It opens with `rel="noopener noreferrer"`, so the Help Center page gets no hold on the AHP tab and is not told which page you came from.
+
+### Notes
+- **The tab bar moved into its own component, unchanged.** It was part of `App.tsx`; it is now `src/components/shell/AppTabBar.tsx`, with the tab list in `appTabs.ts`. `App.tsx` changes only by rendering the new component and importing the tab list from its new home. The tab buttons, their order, their classes, and the rule that Manage shows only while a decision is open are moved as they were, so the bar could be tested on its own. Nothing tested it before.
+- **New tests: 32, from 480 to 512.** 21 check the link: its exact address, the new tab, the screen-reader name, that it comes straight after About as the bar's last item whichever page is active, and that the bar's buttons are exactly the tabs plus About, with and without a decision open. 11 pin the tabs' existing behaviour: each button selects its own page, the active and inactive styling, and when Manage appears.
+- **Each new test was seen to fail on purpose.** Ten deliberate breakages were tried and each turned the new tests red: a wrong address, the new-tab setting removed, `noreferrer` dropped, the screen-reader words removed, those words made visible, the arrow no longer hidden, the link moved before About, the link turned into a tab, an extra tab added beside it, and two tabs' targets swapped. The older tests stayed green throughout, which is why the new ones exist.
+- **Checked in a browser:** the built-in browser of the Claude desktop app (Chromium) on a development build, at desktop widths, in the light and dark themes. Every tab was clicked, with and without a decision open, and each still opened its own page. Text contrast measured 4.84:1 on the light background and 5.64:1 on the dark one, and 10.30:1 and 11.85:1 on hover, all above the 4.5:1 that WCAG AA asks for. No console errors. The browser does not open a new tab from an automated click, so the opened Help Center tab itself was not seen there.
+- **A note for whoever adds a guide.** A comment in the new test file and in `static-assets.test.ts` says to add any new guide in `public/` to the Help Center's guide list too (`src/data/help.ts` in the spert-landing-page repository).
+- No dependency, Firestore or legal-document change.
+
 ## v0.18.49 (November 16, 2026)
 
 Maintenance — Tailwind CSS, which generates the app’s stylesheet, is updated within its major version, 4.2.4 → 4.3.3, and three libraries used only by the tests are updated with it. The one change you could notice is the default font list; on macOS, in Chromium, every screen checked looks the same before and after. No security advisory is involved.
