@@ -1,5 +1,22 @@
 # SPERT® AHP — Changelog
 
+## v0.18.47 (November 15, 2026)
+
+Security only — no functional, data, or interface changes. Twenty-four security advisories are closed, every one in a tool used to build, test or check SPERT® AHP.
+
+### Security
+- **Twenty-four advisories closed across six packages, all development tools.** `undici` 7.29.0 → 7.29.1 (10 of its 18) · `fast-uri` 3.1.5 → 3.1.8 (6 of 10) · `brace-expansion` 5.0.9 → 5.0.12 (3) · `qs` 6.15.2 → 6.16.0 (2 of 3) · `browserslist` 4.28.4 → 4.29.0 (2) · `baseline-browser-mapping` 2.10.38 → 2.11.24 (1). Every version taken has been public for at least 60 days, and none is a major version change.
+- **The app served to browsers is unchanged by these updates, and that was checked.** The app was built before the updates and again after them, before this release's own version number was added: every file in the two builds is identical, byte for byte.
+- **Three of the updates are deliberate partial steps.** For `undici`, `fast-uri` and `qs`, every version that would close all of their advisories is less than 60 days old, so this release takes the newest version that is not. The `fast-uri` step closes all five of its high-severity advisories. The 13 left across the three (8, 4 and 1) wait for their fixed versions to clear the 60-day window, between December 13 and 18.
+- **Two advisories are acknowledged rather than fixed.** Both are in `@grpc/grpc-js`, a networking component installed with Firebase. It is not part of the code sent to browsers: a production build contains none of it, and both advisories concern it acting as a server, which this app never does. No Firebase release accepts the fixed version yet; this is reopened when one does.
+
+### Fixed
+- **The written notes explaining three version pins were out of date, and are corrected.** Beside each pinned version the project records which advisories it escapes and why. Three of the six notes no longer matched: one said no advisory affected a version that two advisories now flag, and two named advisories that had already been cleared. The check that guards these notes confirms that each one names an advisory, but cannot tell a current note from a stale one, so all three were rechecked against the advisories and the package registry.
+
+### Notes
+- **Counted as distinct advisories: 49 before, 25 after.** npm's own summary counts flagged packages instead, and moves only from 31 to 28; its moderate count even rises, from 18 to 20, because three packages dropped from high to moderate when their high-severity advisories closed. That is why the distinct count is the measure.
+- Lockfile movement, measured rather than eyeballed: **10 entries changed, 0 added, 0 removed**, all development-only. Six are the packages named above; the other four are browser-compatibility data that `browserslist` updates with it.
+
 ## v0.18.46 (November 8, 2026)
 
 - **Dashboard toolbar now matches the rest of the SPERT® Suite.** The buttons beside the Decisions heading now read, left to right, Export All · Import · New Decision, the same order and wording as the other SPERT® apps. Each has an icon, and the “+” in front of New Decision is replaced by a plus icon. Every button is still disabled in exactly the same situations as before.
