@@ -13,6 +13,36 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.18.51',
+    date: '2026-11-21',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'The header title is now in AHP’s own colour. “SPERT” and “AHP” are each drawn as a gradient in the amber of AHP’s icon, from a lighter amber on the left to a deeper one on the right, in both the light and dark themes. The ® keeps its grey. The title’s size, weight, wording and position are unchanged. Each SPERT® Suite app’s title is moving to its own icon colour in the same way.',
+          'The “Return to Decisions” header no longer fades on hover. Clicking the icon or the title still returns you to your decisions, with the same pointer cursor and keyboard focus ring.',
+          'Printed, or with your system’s increased-contrast setting on, the title is solid text. In print it is near-black in both themes. When your operating system asks for more contrast (for example macOS “Increase contrast”), it is near-black in the light theme and near-white in the dark theme.',
+        ],
+      },
+      {
+        title: 'Internal — the title’s colours are held by a test',
+        items: [
+          'A new test holds the title’s colours to the header behind them. It reads the end colours from the header’s source, checks that there are exactly two gradient words and that they agree, resolves the header’s background through the installed Tailwind CSS and pins it, and samples each gradient at 41 points against the 3:1 that the title’s size calls for (it is 20 px bold at every width). It also holds the print and increased-contrast fallbacks, the removed hover fade, and the heading’s text, “SPERT® AHP” with its space.',
+          'Contrast against the header, before and after: light 17.74:1 → 3.01:1 at the gradient’s weakest point; dark 13.33:1 → 4.83:1.',
+          'Known limitation, accepted (2026-11-22). There are no print rules, so the header prints. With Chrome’s default print setting (“Background graphics” off) the title prints near-black on white paper in both themes. A dark-theme print with “Background graphics” on puts the near-black title on the dark header, at 1.20:1. Before this release, Chrome printed the dark theme’s near-white title as grey on white paper (2.58:1), because it darkens light text when it leaves backgrounds out.',
+        ],
+      },
+      {
+        title: 'Notes',
+        items: [
+          'New tests: 15, from 512 to 527. Each was seen to fail on purpose: eight deliberate breakages of the header each turned exactly the predicted tests red, from the old blue gradient put back in each theme to the space moved inside “AHP” and the hover fade put back. The only other failure in those runs was the code-quality timing test, which timed out while the machine was heavily loaded and does not read the files changed here.',
+          'Checked in headless Chrome, on a development build and on the production build, in both themes, at 1,024 and 800 px wide: the gradient’s colours; the title’s text, weight and word widths, the space before “AHP” and the ®’s position and colour, all unchanged from before the change; a live switch of theme, both ways; hover; increased contrast; and print. Safari, Firefox and a paper printer were not checked.',
+          'No dependency, Firestore or legal-document change.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.50',
     date: '2026-11-16',
     sections: [
