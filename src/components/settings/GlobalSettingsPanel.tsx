@@ -4,6 +4,7 @@
 
 import { useId, useState, useSyncExternalStore } from 'react';
 import StorageSection from './StorageSection';
+import HeadingRow from '../shell/HeadingRow';
 import {
   isLocalStorageWarningSuppressed,
   setLocalStorageWarningSuppressed,
@@ -46,9 +47,12 @@ export default function GlobalSettingsPanel() {
     saveAttribution(next);
   };
 
+  // A fragment: the heading row is a direct child of the frame's `main`, so it stays full width on this capped screen
+  // (X4). The body starts 16 px under it (`.sf-below`).
   return (
-    <div className="space-y-8 max-w-lg">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Settings</h2>
+    <>
+      <HeadingRow>Settings</HeadingRow>
+      <div className="sf-below space-y-8 max-w-lg">
 
       <section className="space-y-3">
         <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Cloud Storage</h3>
@@ -116,5 +120,6 @@ export default function GlobalSettingsPanel() {
         </div>
       </section>
     </div>
+    </>
   );
 }

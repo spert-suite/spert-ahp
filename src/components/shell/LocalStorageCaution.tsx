@@ -29,15 +29,16 @@ export default function LocalStorageCaution() {
   if (mode !== 'local' || hidden) return null;
 
   return (
-    <div className="mb-4 p-3 rounded-lg border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20 flex items-start justify-between gap-3">
-      <p className="text-sm text-gray-800 dark:text-gray-200">
+    // The frame's caution notice (`.sf-notice--caution`, contract §3 "Notices slot").
+    <div className="sf-notice sf-notice--caution">
+      <p>
         <strong>Your data exists only in this browser</strong> and can be lost without warning.{' '}
         Export at the end of every session to protect your work.
       </p>
       <button
         type="button"
         onClick={dismissCautionForThisLoad}
-        className="shrink-0 px-3 py-1 text-xs font-medium rounded-md border border-amber-400 dark:border-amber-600 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-800/50 transition-colors"
+        className="sf-notice-dismiss"
       >
         Got it
       </button>

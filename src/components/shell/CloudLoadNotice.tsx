@@ -18,14 +18,16 @@ export default function CloudLoadNotice({ modelId, title }: CloudLoadNoticeProps
   const shown = useSyncExternalStore(subscribeGuardedLoads, () => isGuardedLoad(modelId));
   if (!shown) return null;
   return (
-    <div role="status" className="mb-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 flex items-center justify-between gap-3 dark:border-amber-700/50 dark:bg-amber-900/20">
-      <p className="text-sm text-amber-800 dark:text-amber-200">
+    // The frame's caution notice (`.sf-notice--caution`, contract §3). The button keeps its wording, "Dismiss", in the
+    // frame's 28 px outlined dismiss style.
+    <div role="status" className="sf-notice sf-notice--caution">
+      <p>
         Part of &ldquo;{title || 'this decision'}&rdquo; could not be read and was left out so the decision could open.
       </p>
       <button
         type="button"
         onClick={() => dismissGuardedLoad(modelId)}
-        className="text-sm font-medium text-amber-800 dark:text-amber-200 underline hover:no-underline flex-shrink-0"
+        className="sf-notice-dismiss"
       >
         Dismiss
       </button>

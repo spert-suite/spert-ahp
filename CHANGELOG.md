@@ -1,5 +1,30 @@
 # SPERT® AHP — Changelog
 
+## v0.19.0 (November 23, 2026)
+
+AHP now wears the SPERT® Suite's shared app frame, the same in every app: a brand row, a navigation row, one notices area, one page column and a compact footer, at the same places and sizes everywhere. AHP is the first app to adopt it.
+
+### Changed
+- **One shared frame on every screen.** A 56 px brand row and a 44 px navigation row at the top, the page in one column up to 1,600 px wide with 32 px margins, and a 69 px footer. Light pages are white; dark pages use one dark ground, `#101828`, for the whole frame and page (the header's own darker grey is gone).
+- **The brand row.** The AHP icon and "SPERT® AHP" at 24 px bold, in AHP's amber gradient, now link to your decisions (a plain click closes the open decision and shows Decisions; Cmd- or Ctrl-click opens Decisions in a new tab). It is followed by a tagline, "Decision-making with the Analytic Hierarchy Process". The theme button and the account chip sit at the right. Screen readers now hear the link by its visible name, "SPERT® AHP" (it was "Return to Decisions"), and the title is no longer a heading.
+- **The "Dashboard" tab is now "Decisions", named for what it holds,** and its heading reads "Decisions". "Go to Dashboard" and "Back to Dashboard" read "Go to Decisions" and "Back to Decisions". Two messages on the Compare tab that sent you to "Decisions" to add or remove decision factors and alternatives now say "the Decision tab", where you do that.
+- **The navigation row has two zones.** Your work on the left (Decisions, Decision, Compare, Results, and Manage while a decision is open); Settings, About and Help Center ↗ on the right. The current page is underlined, at the same weight as the others, and announced to screen readers as the current page. If the window is too narrow for the left zone, it scrolls sideways; AHP's items fit at 150 % zoom of a 1,280 px window.
+- **Every screen has one page heading at the same place,** 24 px bold. On Decision, Compare, Results and Manage it is the open decision's name ("Untitled decision" until you give it one; "No decision open" when none is). Every screen but Decisions keeps its content to 896 px, aligned to the left edge of the column; the heading row stays full width.
+- **The Decisions toolbar buttons are 36 px tall with 14 px text and 18 px icons,** in AHP's own colours and corners. The decision tiles are unchanged, in a grid of three columns at 1,280 and 1,440 px and four at 1,920.
+- **The notices (terms, the local-storage caution, invitations and cloud-load notices) sit together under the navigation row,** full width, in the frame's colours, each with a 28 px outlined "Got it" (the cloud-load notice keeps "Dismiss").
+- **Contrast fixes in the dark theme:** the footer links (3.38:1 → 6.73:1), "Sign in" in the account chip (3.22:1 → 6.73:1), and the keyboard focus ring (2.45:1 → 6.98:1). The ® mark is now a readable grey (1.47:1 → 4.84:1 light, 6.82:1 dark). The theme button's icons draw in that grey at full strength; the sun was 1.72:1.
+- **Under your system's increased-contrast setting the title is solid** `#333333` (light) or `#e2e8f0` (dark), the same in every SPERT® Suite app; in print it is solid black.
+- **A "Skip to main content" link** is now the first thing the Tab key reaches.
+
+### Internal — the frame and its guards
+- **The frame's stylesheet, `src/styles/spert-frame.css`, is vendored byte for byte** from the suite's canonical copy and imported once, unlayered. A new test pins its md5 and checks nothing else imports it.
+- **The title-gradient test is re-pinned on purpose,** to the frame's ground (`#ffffff` / `#101828`, was `#1e2939`), the 24 px title (was 20 px), the ramps now declared once in `src/index.css`, and the frame's fallbacks. The ramps' weakest points: light 3.01:1 (unchanged), dark 5.85:1 (was 4.83:1).
+- **New tests: from 527 to 580.** The navigation's zones and current page on every page (exactly one item, none on the changelog); one `h1` per page, in the heading row; the brand link's role, name and clicks; the footer's link colours; the account chip in all three states, at rest and on hover, in both themes; the theme icons. Each new test was seen to fail on purpose, once.
+- **Checked with the suite's frame-check in headless Chrome** against a local production build, at 1,280, 1,440 and 1,920 px, light and dark, with increased contrast, and at 125 % and 150 % zoom: no unregistered deviations on Decisions, Compare, Decision, Results, Manage, Settings, About and the changelog. The notices were measured on a first visit; an empty Decisions screen has no tile grid to measure, so Decisions is measured with one decision in it.
+
+### Notes
+- No dependency, Firestore or legal-document change. Exports still carry the app version, now 0.19.0.
+
 ## v0.18.51 (November 21, 2026)
 
 The SPERT® AHP title in the header is now drawn in AHP's own amber, as a gradient, and the "Return to Decisions" header no longer fades when you hover over it.

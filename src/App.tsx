@@ -19,17 +19,27 @@ import FirstRunBanner from './components/shell/FirstRunBanner';
 import LocalStorageCaution from './components/shell/LocalStorageCaution';
 import ContentErrorBoundary from './components/shell/ContentErrorBoundary';
 import AppTabBar from './components/shell/AppTabBar';
-import { TABS, type TabName } from './components/shell/appTabs';
+import HeadingRow from './components/shell/HeadingRow';
+import { type TabName } from './components/shell/appTabs';
 import { useUserId } from './hooks/useUserId';
 import { useAHP } from './hooks/useAHP';
 import { useTheme } from './hooks/useTheme';
 import { useStorage } from './contexts/StorageContext';
 import { registerSignOutCleanup } from './lib/signOutCleanupRegistry';
 
-type Page = TabName | 'About' | 'Changelog';
+type Page = TabName | 'Changelog';
+
+/** The pages that show the open decision. Their heading row is App's: the decision's name (contract §7). */
+const DECISION_PAGES: readonly Page[] = ['Decision', 'Compare', 'Results', 'Manage'];
+
+/** The `h1` on a decision page: the decision's title, else "Untitled decision" (the tiles' wording), else none open. */
+function decisionHeading(modelId: string | null | undefined, title: string | undefined): string {
+  if (!modelId) return 'No decision open';
+  return title?.trim() || 'Untitled decision';
+}
 
 export default function App() {
-  const [activePage, setActivePage] = useState<Page>('Dashboard');
+  const [activePage, setActivePage] = useState<Page>('Decisions');
   const userId = useUserId();
   const ahpState = useAHP(userId);
   const { mode } = useStorage();
@@ -58,7 +68,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, ahpState.closeModel]);
 
-  // Fall back to Dashboard when an open decision closes from under the
+  // Fall back to Decisions when an open decision closes from under the
   // user (delete, sign-out, cloud→local mode flip) while they're on a
   // model-scoped tab. Forward navigation to Decision after open/load is
   // driven explicitly by DashboardPanel via onDecisionOpened so that
@@ -68,36 +78,34 @@ export default function App() {
   useEffect(() => {
     const prev = prevModelIdRef.current;
     if (prev && !ahpState.modelId && (activePage === 'Manage' || activePage === 'Decision')) {
-      setActivePage('Dashboard');
+      setActivePage('Decisions');
     }
     prevModelIdRef.current = ahpState.modelId;
   }, [ahpState.modelId, activePage]);
 
-  const isTab = (TABS as readonly string[]).includes(activePage);
-
   const handleNavigateHome = () => {
     ahpState.closeModel();
-    setActivePage('Dashboard');
+    setActivePage('Decisions');
   };
 
   const renderContent = () => {
     switch (activePage) {
-      case 'Dashboard':
+      case 'Decisions':
         return <DashboardPanel ahpState={ahpState} userId={userId} onDecisionOpened={() => setActivePage('Decision')} />;
       case 'Decision':
         return ahpState.modelId
           ? <DecisionPanel ahpState={ahpState} />
           : (
             <div className="space-y-4 max-w-md">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">No decision open</h2>
+              {/* "No decision open" is this page's h1, in App's heading row above. */}
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Create a new decision or load an existing one from the Dashboard.
+                Create a new decision or load an existing one from Decisions.
               </p>
               <button
-                onClick={() => setActivePage('Dashboard')}
+                onClick={() => setActivePage('Decisions')}
                 className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
               >
-                Go to Dashboard
+                Go to Decisions
               </button>
             </div>
           );
@@ -118,8 +126,20 @@ export default function App() {
     }
   };
 
+  // The frame (FRAME26, contract §3): skip link, brand row, navigation row, notices slot, then `main` and the footer,
+  // all in the one 1600 px column. Every screen but the Decisions collection is capped at 896 px (exception X4: forms,
+  // ratings and prose), with its heading row kept full width.
+  const heading = DECISION_PAGES.includes(activePage) ? decisionHeading(ahpState.modelId, ahpState.model?.title) : null;
+  const content = (
+    <ContentErrorBoundary resetKey={`${activePage}:${ahpState.modelId ?? ''}`} onBackToDashboard={handleNavigateHome}>
+      {renderContent()}
+    </ContentErrorBoundary>
+  );
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="sf-app" data-sf="app">
+      <a href="#main" className="sf-skip" data-sf="skip">Skip to main content</a>
+
       <AppHeader
         onOpenSettings={() => setActivePage('Settings')}
         onNavigateHome={handleNavigateHome}
@@ -131,18 +151,24 @@ export default function App() {
         onSelect={setActivePage}
       />
 
-      <main className="flex-1 p-6">
-        <div className={isTab ? 'max-w-4xl mx-auto' : ''}>
-          {/* App-wide notices, in suite order: invitation, terms, caution.
-              Other app-wide banners (CloudLoadNotice) follow the group. */}
-          <InvitationBanner />
-          <FirstRunBanner />
-          <LocalStorageCaution />
-          {ahpState.modelId && <CloudLoadNotice modelId={ahpState.modelId} title={ahpState.model?.title ?? ''} />}
-          <ContentErrorBoundary resetKey={`${activePage}:${ahpState.modelId ?? ''}`} onBackToDashboard={handleNavigateHome}>
-            {renderContent()}
-          </ContentErrorBoundary>
-        </div>
+      {/* App-wide notices, in suite order: invitation, terms, caution. Other app-wide banners (CloudLoadNotice)
+          follow the group. An empty slot takes no space. */}
+      <div className="sf-col sf-notices" data-sf="notices">
+        <InvitationBanner />
+        <FirstRunBanner />
+        <LocalStorageCaution />
+        {ahpState.modelId && <CloudLoadNotice modelId={ahpState.modelId} title={ahpState.model?.title ?? ''} />}
+      </div>
+
+      <main id="main" className={activePage === 'Decisions' ? 'sf-col sf-main' : 'sf-col sf-main sf-main--capped'} data-sf="main">
+        {heading === null ? content : (
+          // A decision page's heading row is App's, and sits outside the error boundary, so a view that fails keeps
+          // its h1. Its body starts 16 px under the row, as on every other screen.
+          <>
+            <HeadingRow title={heading}>{heading}</HeadingRow>
+            <div className="sf-below">{content}</div>
+          </>
+        )}
       </main>
 
       <AppFooter onNavigate={(p) => setActivePage(p as Page)} />

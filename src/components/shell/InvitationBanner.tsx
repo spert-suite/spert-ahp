@@ -45,7 +45,9 @@ export default function InvitationBanner() {
     <div
       role="region"
       aria-label="Invitation banner"
-      className="relative max-w-lg mx-auto mb-4 p-5 rounded-lg border border-blue-200 bg-blue-50 shadow-sm text-sm text-blue-900 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-200"
+      // The frame's info notice (`.sf-notice--info`, contract §3): full column width, first in the notices slot. The
+      // sign-in buttons and the × keep their own look; only "Got it"-style buttons take `.sf-notice-dismiss`.
+      className="sf-notice sf-notice--info relative"
     >
       <div className="pr-6">
         {state.kind === 'pre_auth' && (

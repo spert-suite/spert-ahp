@@ -3,13 +3,17 @@
 // See LICENSE file in the project root for full license text.
 
 import { CHANGELOG } from './changelogData';
+import HeadingRow from './HeadingRow';
 import { formatDateLong } from '../../lib/formatChangelogDate';
 
 export default function ChangelogPage() {
   return (
-    <div className="max-w-2xl mx-auto px-6 py-12">
-      <h1 className="text-2xl font-bold dark:text-gray-100">Changelog</h1>
-      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+    // A fragment: the heading row is a direct child of the frame's `main` and stays full width; the entries keep their
+    // own 672 px measure (`max-w-2xl`), aligned to the column's left edge (X4), 16 px under the row.
+    <>
+      <HeadingRow>Changelog</HeadingRow>
+      <div className="sf-below max-w-2xl">
+      <p className="text-sm text-gray-500 dark:text-gray-400">
         Current version: {CHANGELOG[0]?.version ?? 'unknown'}
       </p>
 
@@ -48,5 +52,6 @@ export default function ChangelogPage() {
         ))}
       </div>
     </div>
+    </>
   );
 }

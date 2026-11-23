@@ -16,15 +16,16 @@ export default function FirstRunBanner() {
   if (seen) return null;
 
   return (
-    <div className="mb-4 p-3 rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20 flex items-start justify-between gap-3">
-      <p className="text-sm text-gray-800 dark:text-gray-200">
+    // The frame's info notice (`.sf-notice--info`, contract §3 "Notices slot"): its colours, padding, radius and the
+    // 28 px outlined "Got it" are the stylesheet's, and the links inherit the notice's text colour, underlined.
+    <div className="sf-notice sf-notice--info">
+      <p>
         SPERT® Suite web apps are free to use. No account is required to use them. By accessing or
         using this app, you agree to our{' '}
         <a
           href={TOS_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-700 dark:text-blue-300 underline hover:no-underline"
         >
           Terms of Service
         </a>{' '}
@@ -33,7 +34,6 @@ export default function FirstRunBanner() {
           href={PRIVACY_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-700 dark:text-blue-300 underline hover:no-underline"
         >
           Privacy Policy
         </a>
@@ -43,7 +43,7 @@ export default function FirstRunBanner() {
       <button
         type="button"
         onClick={markFirstRunSeen}
-        className="shrink-0 px-3 py-1 text-xs font-medium rounded-md border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/50 transition-colors"
+        className="sf-notice-dismiss"
       >
         Got it
       </button>

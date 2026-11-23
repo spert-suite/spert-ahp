@@ -11,17 +11,19 @@ import { render, screen, within } from '@testing-library/react';
 import AppTabBar from '../AppTabBar';
 
 // The Help Center link (v0.18.50): a link out to the SPERT® Suite Help Center, after About
-// at the right-hand end of the tab bar. It must never become a tab.
+// at the right-hand end of the tab bar. It must never become a tab. Since the suite frame
+// (FRAME26, v0.19.0) the bar has two zones; the link ends the right one, and the collection
+// item is "Decisions" (it was "Dashboard").
 //
 // Every expectation below is a LITERAL. The tab labels are written out rather than read
 // from TABS, and the URL is never imported, so a wrong slug or an extra TABS entry cannot
 // make its own test agree with it.
 
 const LINK_NAME = 'Help Center (opens in a new tab)';
-const TABS_WITHOUT_MODEL = ['Dashboard', 'Decision', 'Compare', 'Results', 'Settings', 'About'];
-const TABS_WITH_MODEL = ['Dashboard', 'Decision', 'Compare', 'Results', 'Manage', 'Settings', 'About'];
+const TABS_WITHOUT_MODEL = ['Decisions', 'Decision', 'Compare', 'Results', 'Settings', 'About'];
+const TABS_WITH_MODEL = ['Decisions', 'Decision', 'Compare', 'Results', 'Manage', 'Settings', 'About'];
 
-function renderBar(activePage = 'Dashboard', modelOpen = false) {
+function renderBar(activePage = 'Decisions', modelOpen = false) {
   render(<AppTabBar activePage={activePage} modelOpen={modelOpen} onSelect={() => {}} />);
   const nav = screen.getByRole('navigation');
   return { nav, link: within(nav).getByRole('link', { name: LINK_NAME }) };
@@ -65,21 +67,22 @@ describe('AppTabBar — Help Center link', () => {
     ['a model open', true, TABS_WITH_MODEL],
   ])('with %s', (_label, modelOpen, expected) => {
     it('is not a tab: the bar’s buttons are exactly the tab labels plus About, in order', () => {
-      const { nav } = renderBar('Dashboard', modelOpen);
+      const { nav } = renderBar('Decisions', modelOpen);
       const labels = within(nav).getAllByRole('button').map((b) => b.textContent);
       expect(labels).toEqual(expected);
     });
 
     it.each([...expected, 'Changelog'])(
-      'sits immediately after About, as the bar’s last child, with %s active',
+      'sits immediately after About, as the right zone’s last child, with %s active',
       (active) => {
         const { nav, link } = renderBar(active, modelOpen);
-        const row = nav.firstElementChild;
-        expect(row?.lastElementChild).toBe(link);
+        const zone = nav.querySelector('[data-sf="nav-app"]');
+        expect(zone?.lastElementChild).toBe(link);
         expect(link.previousElementSibling?.tagName).toBe('BUTTON');
         expect(link.previousElementSibling?.textContent).toBe('About');
         // Never a tab's shape or active colour, whichever page is active.
-        expect(link.className).not.toMatch(/border-b|blue/);
+        expect(link.className).not.toMatch(/border-b|blue|sf-tab/);
+        expect(link.hasAttribute('aria-current')).toBe(false);
       },
     );
   });

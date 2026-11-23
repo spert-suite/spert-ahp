@@ -4,6 +4,21 @@
 
 @import "tailwindcss";
 
+/* The SPERT® Suite app frame (FRAME26): the canonical stylesheet, vendored byte for byte. Never edit the copy: a
+   change goes to the canonical file in spert-suite-docs (suite/frame/), then is copied here, and
+   src/__tests__/frame-stylesheet.test.ts pins its md5. Imported once, here, and unlayered on purpose: its sf- rules
+   beat any Tailwind utility on the same element (contract §9.2). */
+@import "./styles/spert-frame.css";
+
+/* AHP's HDR26 title ramps, which the frame's .sf-grad draws on each word of "SPERT® AHP": the favicon amber
+   #f59e0b, light end to dark end, interpolated in Oklab as Tailwind's bg-gradient-to-r was. Each ramp is measured
+   at every point against the page ground (#ffffff, #101828) at 3 : 1; a change to either end needs a new
+   measurement (src/components/shell/__tests__/AppHeader.title-gradient.test.ts reads these two lines). */
+:root {
+  --app-grad-light: linear-gradient(to right in oklab, #cd8515, #845200);
+  --app-grad-dark: linear-gradient(to right in oklab, #ffc785, #ce8400);
+}
+
 /* Enable dark mode via class strategy */
 @custom-variant dark (&:where(.dark, .dark *));
 
