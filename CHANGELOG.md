@@ -1,5 +1,20 @@
 # SPERT® AHP — Changelog
 
+## v0.19.1 (November 23, 2026)
+
+The Help Center link at the right of the navigation row now underlines when you point at it, as the footer's links do. Nothing else on screen changes.
+
+### Changed
+- **The Help Center link underlines on hover.** It had no hover cue: the frame's own style for the link outranked the underline AHP gave it. The suite frame's stylesheet now draws the underline itself, the same in every SPERT® Suite app. Keyboard focus still shows the frame's focus ring.
+
+### Internal — the frame and its guards
+- **The frame's stylesheet, `src/styles/spert-frame.css`, is re-vendored at version 2** (md5 `69146fd77679c71e03d2f06cfea96cf1`), byte for byte from the suite's canonical copy; its one new rule is `.sf-help:hover { text-decoration: underline; }`. The md5 pin in `frame-stylesheet.test.ts` moves with it.
+- **The "No saved decisions yet" panel carries `data-sf="empty"`,** the frame's hook for the panel that stands in for the tile grid on an empty Decisions screen, so the suite's frame-check now measures a first visit instead of reporting a missing grid. Its look and place are unchanged. A new test holds the hook: exactly one empty panel, inside `main` after the heading row, with no tile grid; and none once a decision exists. Seen to fail on purpose, both ways.
+- **Checked with the suite's frame-check** in headless Chrome against a local production build, on Decisions with one decision, Decisions on a first visit, and Compare: no unregistered deviations.
+
+### Notes
+- No dependency, Firestore or legal-document change. Exports carry the app version, now 0.19.1.
+
 ## v0.19.0 (November 23, 2026)
 
 AHP now wears the SPERT® Suite's shared app frame, the same in every app: a brand row, a navigation row, one notices area, one page column and a compact footer, at the same places and sizes everywhere. AHP is the first app to adopt it.

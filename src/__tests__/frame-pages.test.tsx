@@ -90,6 +90,27 @@ describe('the frame, page by page (FRAME26)', () => {
     expectPage('Decisions', 'Decisions');
   });
 
+  // Contract §7 "Empty collection" (frame v2): the panel that stands in for the tile grid carries data-sf="empty", so
+  // frame-check measures it on a first visit instead of reporting tiles.found; it never shows beside a grid. Its look
+  // is an open decision, so only the hook and its place are held here.
+  it('hooks the empty Decisions panel data-sf="empty" in place of the tile grid, and drops it once a decision exists', async () => {
+    render(<TestProviders><App /></TestProviders>);
+    await screen.findByText(/No saved decisions yet/);
+    const empty = Array.from(document.querySelectorAll('[data-sf="empty"]'));
+    expect(empty, 'exactly one empty panel').toHaveLength(1);
+    expect(empty[0]!.textContent).toMatch(/No saved decisions yet/);
+    expect(main().contains(empty[0]!), 'inside main').toBe(true);
+    const row = document.querySelector('[data-sf="headrow"]') as HTMLElement;
+    expect(row.compareDocumentPosition(empty[0]!) & Node.DOCUMENT_POSITION_FOLLOWING, 'after the heading row').toBeTruthy();
+    expect(document.querySelector('[data-sf="tiles"]'), 'no tile grid beside it').toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'New Decision' }));
+    await waitFor(() => expect(within(navRow()).queryByRole('button', { name: 'Manage' })).not.toBeNull());
+    go('Decisions');
+    await waitFor(() => expect(document.querySelector('[data-sf="tiles"]')).not.toBeNull());
+    expect(document.querySelectorAll('[data-sf="empty"]'), 'no empty panel beside the grid').toHaveLength(0);
+  });
+
   it('puts the app-wide notices in the notices slot, before main, with the frame’s dismiss buttons', async () => {
     render(<TestProviders><App /></TestProviders>);
     await screen.findByText(/No saved decisions yet/);
