@@ -2,7 +2,7 @@
 // Licensed under the GNU General Public License v3.0.
 // See LICENSE file in the project root for full license text.
 
-import { TABS, type TabName } from './appTabs';
+import { APP_TABS, WORK_TABS, type TabName } from './appTabs';
 
 // This app's page in the SPERT® Suite Help Center. Module-local: the link below is its only
 // consumer. Deliberately not exported, so the tests compare the address as a literal and a
@@ -10,67 +10,63 @@ import { TABS, type TabName } from './appTabs';
 const HELP_CENTER_URL = 'https://spertsuite.com/help/ahp';
 
 interface AppTabBarProps {
-  /** The page currently shown. 'Changelog' (or any non-bar page) highlights nothing. */
+  /** The page currently shown. 'Changelog' (or any page no item leads to) marks nothing active. */
   activePage: string;
-  /** Whether a decision model is open. The Manage tab is shown only when one is. */
+  /** Whether a decision model is open. The Manage item is shown only when one is. */
   modelOpen: boolean;
-  onSelect: (page: TabName | 'About') => void;
+  onSelect: (page: TabName) => void;
+}
+
+function Tab({ page, activePage, onSelect }: { page: TabName; activePage: string; onSelect: (page: TabName) => void }) {
+  // The active item is marked by `aria-current="page"` alone: the frame's stylesheet draws its underline and colour
+  // from that attribute, at the same weight as every other item, so nothing moves when the selection changes. The
+  // attribute is omitted, not "false", on every other item.
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(page)}
+      className="sf-tab"
+      aria-current={activePage === page ? 'page' : undefined}
+    >
+      {page}
+    </button>
+  );
 }
 
 /**
- * The tab bar under the app header. Moved out of App.tsx unchanged at v0.18.50 so it can be
- * rendered and tested on its own; the Help Center link at its right-hand end is the only
- * addition.
+ * The frame's navigation row (FRAME26, contract §3): a full-width 44 px band under the brand row. Two zones:
+ * the work items on the left (Decisions, the collection, first; then the open decision's views), and
+ * Settings · About · Help Center ↗ on the right, always in that order. Compare and Results stay visible with no
+ * decision open (they render a gated message); Manage appears only while one is open.
  */
 export default function AppTabBar({ activePage, modelOpen, onSelect }: AppTabBarProps) {
-  // The Manage tab only appears when a model is loaded. Compare and Results
-  // intentionally remain always-visible (they render gated messages internally).
-  const visibleTabs = TABS.filter((tab) => tab !== 'Manage' || modelOpen);
+  const workTabs = WORK_TABS.filter((tab) => tab !== 'Manage' || modelOpen);
 
   return (
-    <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-5xl mx-auto flex px-6">
-        {visibleTabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => onSelect(tab)}
-            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activePage === tab
-                ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-500'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-        <button
-          key="About"
-          onClick={() => onSelect('About')}
-          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-            activePage === 'About'
-              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-500'
-          }`}
-        >
-          About
-        </button>
-        {/* Help Center: a LINK that leaves the app, never a tab. So it is not in TABS, not a
-            <button>, and has none of the tabs' bottom-border styling. It sits after About, at
-            the bar's right-hand end, as quiet text in the inactive tabs' greys, underlined on
-            hover, so it never reads as one more view of the app. The arrow is decoration,
-            hidden from assistive technology; the visually hidden text gives the accessible
-            name "Help Center (opens in a new tab)". ⚠️ The spaces are their own text nodes,
-            outside the spans: with a space inside a span, the accessible-name computation
-            trims it and gives "Help Center(opens in a new tab)" (measured in both pilots). */}
-        <a
-          href={HELP_CENTER_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-auto self-center whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:underline underline-offset-2"
-        >
-          Help Center{' '}<span aria-hidden="true">↗</span>{' '}
-          <span className="sr-only">(opens in a new tab)</span>
-        </a>
+    <nav className="sf-nav" data-sf="nav">
+      <div className="sf-col sf-nav-row">
+        <div className="sf-nav-work" data-sf="nav-work">
+          {workTabs.map((tab) => (
+            <Tab key={tab} page={tab} activePage={activePage} onSelect={onSelect} />
+          ))}
+        </div>
+        <div className="sf-nav-app" data-sf="nav-app">
+          {APP_TABS.map((tab) => (
+            <Tab key={tab} page={tab} activePage={activePage} onSelect={onSelect} />
+          ))}
+          {/* Help Center: a LINK that leaves the app, never a tab. So it is not in APP_TABS, not a
+              <button>, and never carries aria-current. It sits after About, at the row's right-hand
+              end, as quiet 400-weight text (the frame's `.sf-help`), so it never reads as one more
+              view of the app. The arrow is decoration, hidden from assistive technology; the
+              visually hidden text gives the accessible name "Help Center (opens in a new tab)".
+              ⚠️ The spaces are their own text nodes, outside the spans: with a space inside a
+              span, the accessible-name computation trims it and gives
+              "Help Center(opens in a new tab)" (measured in both pilots). */}
+          <a href={HELP_CENTER_URL} target="_blank" rel="noopener noreferrer" className="sf-help">
+            Help Center{' '}<span aria-hidden="true">↗</span>{' '}
+            <span className="sr-only">(opens in a new tab)</span>
+          </a>
+        </div>
       </div>
     </nav>
   );

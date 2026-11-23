@@ -102,14 +102,14 @@ describe('Dashboard toolbar', () => {
     });
   });
 
-  it('draws one 16 px icon per button, hidden from assistive tech, and no leading "+"', async () => {
+  it('draws one 18 px icon per button (the frame toolbar size), hidden from assistive tech, and no leading "+"', async () => {
     setup({ models: [MODEL] });
     await screen.findByText('Pick a vendor');
     for (const b of toolbarButtons()) {
       const svgs = b.querySelectorAll('svg');
       expect(svgs).toHaveLength(1);
       expect(svgs[0].getAttribute('aria-hidden')).toBe('true');
-      expect(svgs[0].getAttribute('width')).toBe('16');
+      expect(svgs[0].getAttribute('width')).toBe('18');
       expect(b.textContent?.startsWith('+')).toBe(false);
     }
   });

@@ -10,6 +10,7 @@ import { useStorage } from '../../contexts/StorageContext';
 import { useDragReorder } from '../../hooks/useDragReorder';
 import { useImportState } from '../../hooks/useImportState';
 import ImportPreviewSection from './ImportPreviewSection';
+import HeadingRow from '../shell/HeadingRow';
 import { TrashIcon } from '../icons/TrashIcon';
 import { DragHandleIcon } from '../icons/DragHandleIcon';
 import { ToolbarIcon } from '../icons/ToolbarIcon';
@@ -150,58 +151,62 @@ export default function DashboardPanel({ ahpState, userId, onDecisionOpened }: D
         ? 'Reading…'
         : null;
 
+  // The toolbar's buttons take the frame's size (`.sf-btn`: 36 px, 14 px / 500, 18 px icons); their borders, corners,
+  // colours and hover stay AHP's own (contract §2). Toolbar order is suite-wide (GanttApp's ProjectsToolbar is the
+  // reference): Export All · Import · New Decision. Every button is always rendered; gates disable, never hide. While
+  // a progress label shows, the aria-label is dropped so the accessible name stays the visible text (WCAG 2.5.3, Label
+  // in Name).
+  const toolbar = (
+    <>
+      <button
+        onClick={() => { void handleExportAll(); }}
+        disabled={savedModels.length === 0 || isExportingAll}
+        aria-label={isExportingAll ? undefined : 'Export all decisions as JSON'}
+        className="sf-btn px-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+      >
+        <ToolbarIcon d={TOOLBAR_ICON_PATHS.export} size={18} />
+        {isExportingAll ? 'Exporting…' : 'Export All'}
+      </button>
+      <button
+        onClick={importState.handleImportClick}
+        disabled={importState.isBusy || importState.isCloudNotReady}
+        aria-busy={importBusyLabel !== null}
+        aria-label={importBusyLabel === null ? 'Import decisions from JSON' : undefined}
+        className="sf-btn px-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+      >
+        <ToolbarIcon d={TOOLBAR_ICON_PATHS.import} size={18} />
+        {importBusyLabel ?? 'Import'}
+      </button>
+      <button
+        onClick={handleCreate}
+        className="sf-btn px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+      >
+        <ToolbarIcon d={TOOLBAR_ICON_PATHS.plus} size={18} />
+        New Decision
+      </button>
+      <input
+        ref={importState.fileInputRef}
+        type="file"
+        name="importJsonFile"
+        accept="application/json,.json"
+        onChange={(e) => { void importState.handleFileChange(e); }}
+        className="hidden"
+      />
+    </>
+  );
+
+  // A fragment, not a wrapper: the heading row and the tile grid are direct children of the frame's `main`
+  // (HeadingRow's note). The dashboard's own notices sit 16 px under the heading row (`.sf-below`), and the tiles 16 px
+  // under whatever is above them (`.sf-tiles`). The tiles themselves are unchanged (contract §10).
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Decisions</h2>
-        {/* Toolbar order is suite-wide (GanttApp's ProjectsToolbar is the
-            reference): Export All · Import · New Decision. Every button is
-            always rendered; gates disable, never hide. While a progress label
-            shows, the aria-label is dropped so the accessible name stays the
-            visible text (WCAG 2.5.3, Label in Name). */}
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => { void handleExportAll(); }}
-            disabled={savedModels.length === 0 || isExportingAll}
-            aria-label={isExportingAll ? undefined : 'Export all decisions as JSON'}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
-          >
-            <ToolbarIcon d={TOOLBAR_ICON_PATHS.export} size={16} />
-            {isExportingAll ? 'Exporting…' : 'Export All'}
-          </button>
-          <button
-            onClick={importState.handleImportClick}
-            disabled={importState.isBusy || importState.isCloudNotReady}
-            aria-busy={importBusyLabel !== null}
-            aria-label={importBusyLabel === null ? 'Import decisions from JSON' : undefined}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-xs font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
-          >
-            <ToolbarIcon d={TOOLBAR_ICON_PATHS.import} size={16} />
-            {importBusyLabel ?? 'Import'}
-          </button>
-          <button
-            onClick={handleCreate}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-md hover:bg-blue-700"
-          >
-            <ToolbarIcon d={TOOLBAR_ICON_PATHS.plus} size={16} />
-            New Decision
-          </button>
-          <input
-            ref={importState.fileInputRef}
-            type="file"
-            name="importJsonFile"
-            accept="application/json,.json"
-            onChange={(e) => { void importState.handleFileChange(e); }}
-            className="hidden"
-          />
-        </div>
-      </div>
+    <>
+      <HeadingRow toolbar={toolbar}>Decisions</HeadingRow>
 
       {mode === 'cloud' && !cloudDataLoaded && (
         <p
           role="status"
           aria-live="polite"
-          className="text-xs text-amber-600 dark:text-amber-400"
+          className="sf-below text-xs text-amber-600 dark:text-amber-400"
         >
           Cloud decisions are still loading — import will be available in a moment.
         </p>
@@ -209,22 +214,24 @@ export default function DashboardPanel({ ahpState, userId, onDecisionOpened }: D
       {importState.importError && (
         <div
           role="alert"
-          className="text-xs text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-md p-2"
+          className="sf-below text-xs text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-md p-2"
         >
           {importState.importError}
         </div>
       )}
       {importState.phase.tag !== 'idle' && (
-        <ImportPreviewSection importState={importState} />
+        <div className="sf-below">
+          <ImportPreviewSection importState={importState} />
+        </div>
       )}
       {exportAllError && (
-        <div className="text-xs text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-md p-2">
+        <div className="sf-below text-xs text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-md p-2">
           {exportAllError}
         </div>
       )}
 
       {savedModels.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="sf-tiles" data-sf="tiles">
           {savedModels.map((m) => {
             const handlers = drag.handlersFor(m.modelId);
             const isDragging = drag.isDragging(m.modelId);
@@ -295,12 +302,12 @@ export default function DashboardPanel({ ahpState, userId, onDecisionOpened }: D
           })}
         </div>
       ) : (
-        <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center">
+        <div className="sf-below border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             No saved decisions yet. Click <span className="font-medium">New Decision</span> to start.
           </p>
         </div>
       )}
-    </div>
+    </>
   );
 }

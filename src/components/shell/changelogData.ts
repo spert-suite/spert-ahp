@@ -13,6 +13,42 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.19.0',
+    date: '2026-11-23',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'One shared frame on every screen, the same in every SPERT® Suite app: a brand row and a navigation row at the top, the page in one column up to 1,600 px wide, and a compact footer. Light pages are white; dark pages use one dark ground for the whole frame and page.',
+          'The brand row: the AHP icon and “SPERT® AHP” at 24 px bold, in AHP’s amber gradient, now link to your decisions (a plain click closes the open decision and shows Decisions; Cmd- or Ctrl-click opens Decisions in a new tab), followed by a tagline, “Decision-making with the Analytic Hierarchy Process”. Screen readers now hear the link by its visible name, “SPERT® AHP”, and the title is no longer a heading.',
+          'The “Dashboard” tab is now “Decisions”, named for what it holds, and its heading reads “Decisions”. “Go to Dashboard” and “Back to Dashboard” read “Go to Decisions” and “Back to Decisions”. Two messages on the Compare tab now send you to the Decision tab to add or remove decision factors and alternatives.',
+          'The navigation row has two zones: your work on the left (Decisions, Decision, Compare, Results, and Manage while a decision is open), Settings, About and Help Center ↗ on the right. The current page is underlined and announced to screen readers as the current page. If the window is too narrow for the left zone, it scrolls sideways.',
+          'Every screen has one page heading at the same place. On Decision, Compare, Results and Manage it is the open decision’s name (“Untitled decision” until you give it one; “No decision open” when none is). Every screen but Decisions keeps its content to 896 px, aligned to the left.',
+          'The Decisions toolbar buttons are 36 px tall with 14 px text and 18 px icons, in AHP’s own colours. The decision tiles are unchanged, in a grid of three or four columns.',
+          'The notices sit together under the navigation row, full width, each with a 28 px outlined “Got it” (the cloud-load notice keeps “Dismiss”).',
+          'Contrast fixes in the dark theme: the footer links, “Sign in” in the account chip, and the keyboard focus ring now all clear their bars. The ® mark and the theme button’s icons are a readable grey; the theme icons take the text colour on hover.',
+          'Under your system’s increased-contrast setting the title is solid dark grey (light) or near-white (dark), the same in every SPERT® Suite app; in print it is solid black.',
+          'A “Skip to main content” link is now the first thing the Tab key reaches.',
+        ],
+      },
+      {
+        title: 'Internal — the frame and its guards',
+        items: [
+          'The frame’s stylesheet is vendored byte for byte from the suite’s canonical copy and imported once; a new test pins its md5.',
+          'The title-gradient test is re-pinned on purpose to the frame’s ground, the 24 px title, the ramps now declared once in the stylesheet, and the frame’s fallbacks. Weakest points: light 3.01:1 (unchanged), dark 5.85:1 (was 4.83:1).',
+          'New tests: from 527 to 580, for the navigation’s zones and current page, one h1 per page, the brand link, the footer’s link colours, the account chip at rest and on hover, and the theme icons. Each was seen to fail on purpose, once.',
+          'Checked with the suite’s frame-check in headless Chrome against a local production build, at three window sizes, in both themes, with increased contrast and at 125 % and 150 % zoom: no unregistered deviations on any screen. An empty Decisions screen has no tile grid to measure, so Decisions is measured with one decision in it.',
+        ],
+      },
+      {
+        title: 'Notes',
+        items: [
+          'No dependency, Firestore or legal-document change. Exports still carry the app version, now 0.19.0.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.18.51',
     date: '2026-11-21',
     sections: [

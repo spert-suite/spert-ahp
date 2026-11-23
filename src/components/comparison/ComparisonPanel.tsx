@@ -108,7 +108,7 @@ export default function ComparisonPanel({ ahpState, userId }: ComparisonPanelPro
   if (!hasSufficientStructure) {
     return (
       <p className="text-gray-500 dark:text-gray-400">
-        Add at least 2 decision factors and 2 alternatives in Decisions.
+        Add at least 2 decision factors and 2 alternatives in the Decision tab.
       </p>
     );
   }
@@ -117,7 +117,7 @@ export default function ComparisonPanel({ ahpState, userId }: ComparisonPanelPro
     return (
       <p className="text-gray-500 dark:text-gray-400">
         This decision has more than {MAX_COMPARISON_ITEMS} decision factors or alternatives, which is more than can be
-        compared at this completion tier. Remove some in Decisions, or use the Quick tier, to compare them.
+        compared at this completion tier. Remove some in the Decision tab, or use the Quick tier, to compare them.
       </p>
     );
   }
@@ -140,7 +140,7 @@ export default function ComparisonPanel({ ahpState, userId }: ComparisonPanelPro
   return (
     <div className="space-y-6">
       {/* Sticky band — bleed matches main p-6 in App.tsx; update together. */}
-      <div className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-900 -mx-6 px-6 py-2 flex gap-2 flex-wrap">
+      <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 py-2 flex gap-2 flex-wrap">
         <button
           onClick={() => setActiveLayer('criteria')}
           className={`px-3 py-1.5 text-sm rounded-md ${

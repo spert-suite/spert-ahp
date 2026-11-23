@@ -21,13 +21,13 @@ function Boom(): never {
 }
 
 describe('ContentErrorBoundary', () => {
-  it('keeps the rest of the app and offers the way back to the Dashboard', () => {
+  it('keeps the rest of the app and offers the way back to Decisions', () => {
     const err = vi.spyOn(console, 'error').mockImplementation(() => {});
     const back = vi.fn();
     render(<div><p>tabs</p><ContentErrorBoundary resetKey="Compare:m1" onBackToDashboard={back}><Boom /></ContentErrorBoundary></div>);
     expect(screen.getByText('tabs')).toBeTruthy();
     expect(screen.getByRole('alert').textContent).toContain('This page could not be displayed');
-    fireEvent.click(screen.getByRole('button', { name: 'Back to Dashboard' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Back to Decisions' }));
     expect(back).toHaveBeenCalledTimes(1);
     err.mockRestore();
   });

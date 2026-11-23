@@ -3,6 +3,7 @@
 // See LICENSE file in the project root for full license text.
 
 import { CHANGELOG } from './changelogData';
+import HeadingRow from './HeadingRow';
 
 const R = () => <sup className="text-[0.45em] text-gray-400 font-normal tracking-wide align-super">&reg;</sup>;
 
@@ -21,8 +22,11 @@ interface AboutPageProps {
 
 export default function AboutPage({ onNavigate }: AboutPageProps) {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-12">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">About This App</h1>
+    // A fragment: the heading row is a direct child of the frame's `main` and stays full width; the prose keeps its own
+    // 768 px measure (`max-w-3xl`), aligned to the column's left edge (X4), 16 px under the row.
+    <>
+      <HeadingRow>About This App</HeadingRow>
+      <div className="sf-below max-w-3xl">
 
       {/* Purpose */}
       <Section title="Purpose">
@@ -141,5 +145,6 @@ export default function AboutPage({ onNavigate }: AboutPageProps) {
         </p>
       </Section>
     </div>
+    </>
   );
 }

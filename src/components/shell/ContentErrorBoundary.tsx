@@ -19,7 +19,7 @@ interface ContentErrorBoundaryState {
 /**
  * Around the page content. Without it a render error anywhere unmounted the
  * whole app, leaving a blank page: one malformed decision could take the
- * header, the tabs and the way back to the Dashboard with it.
+ * header, the tabs and the way back to Decisions with it.
  */
 export default class ContentErrorBoundary extends Component<ContentErrorBoundaryProps, ContentErrorBoundaryState> {
   state: ContentErrorBoundaryState = { error: null };
@@ -43,7 +43,7 @@ export default class ContentErrorBoundary extends Component<ContentErrorBoundary
           onClick={this.props.onBackToDashboard}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
         >
-          Back to Dashboard
+          Back to Decisions
         </button>
       </div>
     );
