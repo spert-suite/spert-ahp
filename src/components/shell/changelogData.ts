@@ -26,7 +26,7 @@ export const CHANGELOG: ChangelogEntry[] = [
           'Every screen has one page heading at the same place. On Decision, Compare, Results and Manage it is the open decision’s name (“Untitled decision” until you give it one; “No decision open” when none is). Every screen but Decisions keeps its content to 896 px, aligned to the left.',
           'The Decisions toolbar buttons are 36 px tall with 14 px text and 18 px icons, in AHP’s own colours. The decision tiles are unchanged, in a grid of three or four columns.',
           'The notices sit together under the navigation row, full width, each with a 28 px outlined “Got it” (the cloud-load notice keeps “Dismiss”).',
-          'Contrast fixes in the dark theme: the footer links, “Sign in” in the account chip, and the keyboard focus ring now all clear their bars. The ® mark and the theme button’s icons are a readable grey.',
+          'Contrast fixes in the dark theme: the footer links, “Sign in” in the account chip, and the keyboard focus ring now all clear their bars. The ® mark and the theme button’s icons are a readable grey; the theme icons take the text colour on hover.',
           'Under your system’s increased-contrast setting the title is solid dark grey (light) or near-white (dark), the same in every SPERT® Suite app; in print it is solid black.',
           'A “Skip to main content” link is now the first thing the Tab key reaches.',
         ],

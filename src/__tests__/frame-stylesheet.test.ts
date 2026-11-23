@@ -18,7 +18,7 @@ import { describe, it, expect } from 'vitest';
  * It sits in `src/__tests__/`, which `tsc -b` never compiles (as `copyright-headers.test.ts` explains), so it was
  * type-checked standalone under `--strict --noUncheckedIndexedAccess --noUnusedLocals --noUnusedParameters`.
  */
-const PINNED = 'be2dfef8b0ca703bd93d7242e6fa4a11';
+const PINNED = '6e1fa767afb862d5f7efc8a216abd29b';
 const SRC = join(process.cwd(), 'src');
 const VENDORED = join(SRC, 'styles', 'spert-frame.css');
 const INDEX_CSS = join(SRC, 'index.css');
