@@ -302,7 +302,7 @@ export default function DashboardPanel({ ahpState, userId, onDecisionOpened }: D
           })}
         </div>
       ) : (
-        <div className="sf-below border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center">
+        <div data-sf="empty" className="sf-below border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             No saved decisions yet. Click <span className="font-medium">New Decision</span> to start.
           </p>

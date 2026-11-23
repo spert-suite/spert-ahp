@@ -13,6 +13,32 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.19.1',
+    date: '2026-11-23',
+    sections: [
+      {
+        title: 'Changed',
+        items: [
+          'The Help Center link at the right of the navigation row now underlines when you point at it, as the footer’s links do. It had no hover cue before. Keyboard focus still shows the frame’s focus ring.',
+        ],
+      },
+      {
+        title: 'Internal — the frame and its guards',
+        items: [
+          'The frame’s stylesheet is re-vendored at version 2, byte for byte from the suite’s canonical copy; its one new rule underlines the Help Center link on hover. The md5 pin moves with it.',
+          'The “No saved decisions yet” panel carries the frame’s empty-collection hook, so the suite’s frame-check measures a first visit; its look and place are unchanged. A new test holds the hook both ways, and was seen to fail on purpose.',
+          'Checked with the suite’s frame-check against a local production build: no unregistered deviations on Decisions, Decisions on a first visit, and Compare.',
+        ],
+      },
+      {
+        title: 'Notes',
+        items: [
+          'No dependency, Firestore or legal-document change. Exports carry the app version, now 0.19.1.',
+        ],
+      },
+    ],
+  },
+  {
     version: '0.19.0',
     date: '2026-11-23',
     sections: [
