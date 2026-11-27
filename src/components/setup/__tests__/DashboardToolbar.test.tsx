@@ -121,7 +121,7 @@ describe('Dashboard toolbar', () => {
 
   it('with no decisions: every button still renders, Export All disabled, the rest enabled', async () => {
     setup();
-    await screen.findByText(/No saved decisions yet/);
+    await screen.findByText(/^Create a decision to name your goal/);
     const [exportAll, importBtn, newDecision] = toolbarButtons();
     expect(exportAll.textContent).toBe('Export All');
     expect(exportAll.disabled).toBe(true);
@@ -129,10 +129,11 @@ describe('Dashboard toolbar', () => {
     expect(newDecision.disabled).toBe(false);
   });
 
-  it('empty-state help names the button without the "+"', async () => {
+  it('the Welcome panel (v0.20.0) names its button "Create New Decision", without the "+"', async () => {
     setup();
-    const p = await screen.findByText(/No saved decisions yet/);
-    expect(p.textContent).toBe('No saved decisions yet. Click New Decision to start.');
+    await screen.findByText(/^Create a decision to name your goal/);
+    const panel = document.querySelector('[data-sf="empty"]') as HTMLElement;
+    expect(within(panel).getByRole('button').textContent).toBe('Create New Decision');
   });
 
   it('Export All: disabled while exporting, shows "Exporting…", and the name follows the visible text', async () => {
@@ -162,7 +163,7 @@ describe('Dashboard toolbar', () => {
 
   it('Import: disabled and aria-busy while reading a file, shows "Reading…", name follows the visible text', async () => {
     setup();
-    await screen.findByText(/No saved decisions yet/);
+    await screen.findByText(/^Create a decision to name your goal/);
     const input = document.querySelector('input[type="file"]') as HTMLInputElement;
     const neverReads = { text: () => new Promise<string>(() => {}) };
     await act(async () => {

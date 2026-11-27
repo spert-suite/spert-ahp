@@ -302,10 +302,23 @@ export default function DashboardPanel({ ahpState, userId, onDecisionOpened }: D
           })}
         </div>
       ) : (
-        <div data-sf="empty" className="sf-below border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            No saved decisions yet. Click <span className="font-medium">New Decision</span> to start.
+        // The Welcome panel (v0.20.0, contract §3 and §7; stylesheet v3's `.sf-empty`, 16 px below the heading row and
+        // the column's full width), in the tile grid's place when there is no saved decision. Its button is the
+        // toolbar's New Decision, in the toolbar's own primary look. AHP has no sample (Nov 8), so no note.
+        <div className="sf-empty" data-sf="empty">
+          <h2 className="sf-empty-title">
+            Welcome to SPERT<span className="sf-mark">®</span> AHP
+          </h2>
+          <p className="sf-empty-text">
+            Weigh your alternatives against the criteria that matter to you, two at a time, and see which one ranks
+            first and how consistent your judgments are.
           </p>
+          <p className="sf-empty-text">Create a decision to name your goal, then add its criteria and alternatives.</p>
+          <div className="sf-empty-actions">
+            <button onClick={handleCreate} className="sf-btn px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              Create New Decision
+            </button>
+          </div>
         </div>
       )}
     </>
