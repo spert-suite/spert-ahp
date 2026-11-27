@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "typecheck:tests": "tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

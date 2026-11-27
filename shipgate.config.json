@@ -43,6 +43,11 @@
       "_scopeNote": "Measured with `sonarjs/cognitive-complexity` ONLY, threshold 15 — NOT `sonarjs.configs.recommended`. The two are not comparable: at a sibling on one day the narrow rule found 10 and the broad set 103, of which ~21 were false positives for that codebase. A later reader cannot tell from the number alone which was taken, so it is recorded here."
     },
     { "name": "test", "run": "npm test" },
+    {
+      "name": "typecheck tests (tsc -p tsconfig.test.json)",
+      "run": "npm run typecheck:tests",
+      "_note": "v0.20.0 (FRAME26 clean-up P1). tsconfig.json excludes src/**/__tests__/**, so `tsc -b` never compiled the 62 files there (61 tests and test-utils.tsx), and 116 type errors had built up in 20 of them, unseen. tsconfig.test.json extends it, includes every file under src and adds Node's types (@types/node, installed through @stryker-mutator/core's tree, not declared). This step fails on any type error in a test file."
+    },
     { "name": "build (tsc -b && vite build)", "run": "npm run build" }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  // Every test file, typechecked in the ship gate (v0.20.0, FRAME26 clean-up P1): tsconfig.json excludes src/**/__tests__/** from `tsc -b`.
+  // "node": @types/node 26.0.0 is installed but not declared; it arrives through @stryker-mutator/core's dependency tree. Declaring it belongs to the dependency campaign.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["vitest/globals", "node"],
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/vite-env.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}
