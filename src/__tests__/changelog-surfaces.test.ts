@@ -34,7 +34,7 @@ import { CHANGELOG } from '../components/shell/changelogData';
 describe('changelog surfaces agree', () => {
   const markdown = readFileSync(join(process.cwd(), 'CHANGELOG.md'), 'utf-8');
 
-  const markdownVersions = [...markdown.matchAll(/^## v([\d.]+)\s*\(/gm)].map((m) => m[1]);
+  const markdownVersions = [...markdown.matchAll(/^## v([\d.]+)\s*\(/gm)].map((m) => m[1]!); // the group is not optional
   const dataVersions = CHANGELOG.map((e) => e.version);
 
   it('both surfaces carry entries', () => {

@@ -49,7 +49,7 @@ describe('static assets referenced from source exist in public/', () => {
   for (const file of sourceFiles(join(root, 'src'))) {
     const text = readFileSync(file, 'utf-8');
     for (const match of text.matchAll(ASSET_HREF)) {
-      const href = match[1];
+      const href = match[1]!; // the group is not optional
       const list = references.get(href) ?? [];
       list.push(relative(root, file));
       references.set(href, list);

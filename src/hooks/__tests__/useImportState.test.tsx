@@ -2,7 +2,7 @@
 // Licensed under the GNU General Public License v3.0.
 // See LICENSE file in the project root for full license text.
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useImportState } from '../useImportState';
@@ -83,8 +83,10 @@ const makeFile = makeFileLike;
 
 interface Harness {
   storage: StorageAdapter;
-  loadModel: ReturnType<typeof vi.fn>;
-  onDecisionOpened: ReturnType<typeof vi.fn>;
+  // Typed with the hook's own signatures (v0.20.0: a bare `vi.fn` type did not fit UseImportStateArgs, unseen while
+  // `tsc -b` skipped tests).
+  loadModel: Mock<(modelId: string) => Promise<void>>;
+  onDecisionOpened: Mock<() => void>;
   mode: 'local' | 'cloud';
   cloudDataLoaded: boolean;
 }
@@ -92,8 +94,8 @@ interface Harness {
 function makeHarness(overrides: Partial<Harness> = {}): Harness {
   return {
     storage: new LocalStorageAdapter(),
-    loadModel: vi.fn(async () => {}),
-    onDecisionOpened: vi.fn(),
+    loadModel: vi.fn(async (_modelId: string) => {}),
+    onDecisionOpened: vi.fn(() => {}),
     mode: 'local',
     cloudDataLoaded: true,
     ...overrides,

@@ -6,7 +6,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { User } from 'firebase/auth';
 
 // Mock firebase/firestore so setDoc / serverTimestamp are observable.
-const setDocMock = vi.fn(() => Promise.resolve());
+// Typed with setDoc's three parameters, so `mock.calls[n]` reads as [ref, data, options] (v0.20.0: it read as [], unseen
+// while `tsc -b` skipped tests).
+const setDocMock = vi.fn((_ref: unknown, _data: unknown, _options?: unknown) => Promise.resolve());
 const docMock = vi.fn((db: unknown, col: string, uid: string) => ({ db, col, uid }));
 const serverTimestampMock = vi.fn(() => '__SERVER_TS__');
 

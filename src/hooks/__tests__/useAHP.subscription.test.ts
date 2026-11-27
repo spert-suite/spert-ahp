@@ -58,6 +58,7 @@ function buildStubAdapter(initialMeta: ModelDoc, initialStructure: StructureDoc)
   const adapter: StorageAdapter = {
     createModel: async () => {},
     createModelFromBundle: async () => {},
+    replaceModelFromBundle: async () => {},
     getModel: async () => ({ meta: initialMeta, structure: initialStructure }),
     updateModel: async () => {},
     deleteModel: async () => {},
@@ -67,6 +68,7 @@ function buildStubAdapter(initialMeta: ModelDoc, initialStructure: StructureDoc)
     addCollaborator: async () => {},
     getCollaborators: async () => [],
     updateCollaborator: async () => {},
+    removeCollaborator: async () => {},
     getResponse: async () => null,
     createResponse: async () => {},
     updateResponse: async () => {},
@@ -80,6 +82,13 @@ function buildStubAdapter(initialMeta: ModelDoc, initialStructure: StructureDoc)
         subscriptionCallback = null;
       };
     },
+    // The rest of the interface (v0.20.0: the stub had fallen 8 methods behind, unseen while `tsc -b` skipped tests).
+    reorderModels: async () => {},
+    listPendingInvites: async () => [],
+    revokeInvite: async () => {},
+    resendInvite: async () => {},
+    updateInvite: async () => {},
+    hasLocalProjects: async () => false,
   };
   return {
     adapter,

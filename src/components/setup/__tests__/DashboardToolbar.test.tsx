@@ -24,9 +24,11 @@ vi.mock('../../../storage/exportAllModels', () => ({
 const MODEL: ModelIndexEntry = {
   modelId: 'm1',
   title: 'Pick a vendor',
-  createdAt: '2026-11-01T00:00:00.000Z',
+  status: 'setup',
+  createdAt: Date.UTC(2026, 10, 1),
   order: 0,
-} as ModelIndexEntry;
+  role: 'owner',
+};
 
 function setup(opts: { models?: ModelIndexEntry[]; mode?: 'local' | 'cloud'; cloudDataLoaded?: boolean } = {}) {
   const models = opts.models ?? [];
@@ -73,10 +75,13 @@ function setup(opts: { models?: ModelIndexEntry[]; mode?: 'local' | 'cloud'; clo
   return { ahpState, onDecisionOpened };
 }
 
-function toolbarButtons(): HTMLButtonElement[] {
+/** The heading row's three buttons, Export All · Import · New Decision (a tuple, so each one is typed as present). */
+function toolbarButtons(): [HTMLButtonElement, HTMLButtonElement, HTMLButtonElement] {
   const heading = screen.getByRole('heading', { name: 'Decisions' });
   const row = heading.parentElement!;
-  return within(row).getAllByRole('button') as HTMLButtonElement[];
+  const buttons = within(row).getAllByRole('button') as HTMLButtonElement[];
+  if (buttons.length !== 3) throw new Error(`expected 3 toolbar buttons, found ${buttons.length}`);
+  return [buttons[0]!, buttons[1]!, buttons[2]!];
 }
 
 beforeEach(() => {
@@ -108,8 +113,8 @@ describe('Dashboard toolbar', () => {
     for (const b of toolbarButtons()) {
       const svgs = b.querySelectorAll('svg');
       expect(svgs).toHaveLength(1);
-      expect(svgs[0].getAttribute('aria-hidden')).toBe('true');
-      expect(svgs[0].getAttribute('width')).toBe('18');
+      expect(svgs[0]!.getAttribute('aria-hidden')).toBe('true');
+      expect(svgs[0]!.getAttribute('width')).toBe('18');
       expect(b.textContent?.startsWith('+')).toBe(false);
     }
   });
