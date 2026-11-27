@@ -1,5 +1,22 @@
 # SPERT® AHP — Changelog
 
+## v0.20.0 (November 26, 2026)
+
+An empty Decisions page now welcomes you, the same way every SPERT® app does, and if the app itself ever fails it now says so and offers a way back, instead of leaving a blank page.
+
+### Changed
+- **The empty Decisions page is a Welcome panel.** With no saved decision, a dashed panel across the page says “Welcome to SPERT® AHP”, with two lines about the app and a **Create New Decision** button that does what the toolbar’s New Decision does. It replaces the box that said “No saved decisions yet. Click New Decision to start.”
+- **A crash screen instead of a blank page.** If the app itself fails, it now shows “Something went wrong” and “SPERT® AHP could not display this page. Reload to try again.”, with a **Reload** button, in your light or dark theme. Until now such a failure left a blank white page.
+
+### Internal — the frame and its guards
+- **The frame’s stylesheet is re-vendored at version 3** (md5 `b00d0759ec0a0a4d2db6ba10b16678f0`), byte for byte from the suite’s canonical copy; its only change is the Welcome panel’s `.sf-empty` classes. The md5 pin in `frame-stylesheet.test.ts` moves with it.
+- **The crash screen is `CrashScreen.tsx`.** `CrashBoundary` wraps the providers in `main.tsx`, inside `StrictMode`; its screen sits outside the frame, on the page’s own ground and text colours, and re-applies the stored theme itself.
+- **Every test file is now typechecked in the ship gate.** `tsconfig.json` leaves `src/**/__tests__/**` out of `tsc -b`, and 116 type errors had built up in 20 of those files unseen. `tsconfig.test.json` covers every file, with Node’s types, and `npm run typecheck:tests` is a ship-gate step. The errors were fixed in the tests themselves; every file’s test count is unchanged, and no assertion’s meaning changed.
+- **Checked with the suite’s frame-check** against a local production build: no unregistered deviations on Decisions, Decisions on a first visit (24 on production at 0.19.1) and Compare, at every size and theme, classic scrollbars included; eight further screens read 0. Tests: 59 files and 581 tests before, 61 and 592 after.
+
+### Notes
+- No dependency, Firestore or legal-document change. Exports carry the app version, now 0.20.0.
+
 ## v0.19.1 (November 23, 2026)
 
 The Help Center link at the right of the navigation row now underlines when you point at it, as the footer's links do. Nothing else on screen changes.
