@@ -29,7 +29,7 @@ export const CHANGELOG: ChangelogEntry[] = [
           'The frame’s stylesheet is re-vendored at version 3 (md5 `b00d0759ec0a0a4d2db6ba10b16678f0`), byte for byte from the suite’s canonical copy; its only change is the Welcome panel’s `.sf-empty` classes. The md5 pin in `frame-stylesheet.test.ts` moves with it.',
           'The crash screen is `CrashScreen.tsx`. `CrashBoundary` wraps the providers in `main.tsx`, inside `StrictMode`; its screen sits outside the frame, on the page’s own ground and text colours, and re-applies the stored theme itself.',
           'Every test file is now typechecked in the ship gate. `tsconfig.json` leaves `src//__tests__/` out of `tsc -b`, and 116 type errors had built up in 20 of those files unseen. `tsconfig.test.json` covers every file, with Node’s types, and `npm run typecheck:tests` is a ship-gate step. The errors were fixed in the tests themselves; every file’s test count is unchanged, and no assertion’s meaning changed.',
-          'Checked with the suite’s frame-check against a local production build: no unregistered deviations on Decisions, Decisions on a first visit (24 on production at 0.19.1) and Compare, at every size and theme, classic scrollbars included; eight further screens read 0. Tests: 59 files and 581 tests before, 61 and 592 after.',
+          'Checked with the suite’s frame-check against a local production build: no unregistered deviations on Decisions, Decisions on a first visit (24 on production at 0.19.1) and Compare, at every size and theme, classic scrollbars included; nine further screens read 0. Tests: 59 files and 581 tests before, 61 and 592 after.',
         ],
       },
       {
