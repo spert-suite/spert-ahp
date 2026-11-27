@@ -69,8 +69,17 @@ describe('the frame, page by page (FRAME26)', () => {
     go('Settings');
     expectPage('Settings', 'Settings');
     go('About');
-    expectPage('About This App', 'About');
+    expectPage('About SPERT® AHP', 'About');
     fireEvent.click(within(screen.getByRole('contentinfo')).getByRole('button', { name: /^Version / }));
+    expectPage('Changelog', null);
+  });
+
+  it("About's What's new opens the changelog, as the footer's Version does (v0.21.0)", async () => {
+    render(<TestProviders><App /></TestProviders>);
+    await screen.findByText(/^Create a decision to name your goal/);
+    go('About');
+    const legal = document.querySelector('[data-sf="about-legal"]') as HTMLElement;
+    fireEvent.click(within(legal).getByRole('button', { name: 'What’s new' }));
     expectPage('Changelog', null);
   });
 

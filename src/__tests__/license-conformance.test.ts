@@ -50,7 +50,7 @@ import { describe, it, expect } from 'vitest';
 const SUITE_LICENSE_BODY_SHA256 =
   '1e6f03b041f4a5f42a3d50b554657371742c9ffca7608028129621130222effe';
 
-const REPO_URL = 'https://github.com/famousdavis/spert-ahp';
+const REPO_URL = 'https://github.com/spert-suite/spert-ahp'; // v0.21.0 (A1): where the code lives; the old address only redirects
 
 describe('LICENSE conformance with the canonical SPERT® Suite licence', () => {
   const text = readFileSync(join(process.cwd(), 'LICENSE'), 'utf-8');
