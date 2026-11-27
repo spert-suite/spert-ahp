@@ -1,5 +1,21 @@
 # SPERT® AHP — Changelog
 
+## v0.21.0 (November 27, 2026)
+
+### Changed
+- **The About page is now called “About SPERT® AHP”** and has the same sections, in the same order, as every SPERT® app's: what AHP is, how it works, the 1–9 scale, the guide, your data and storage, and the version and license.
+- **About no longer says that AHP keeps all your data in your browser:** it now says how your decisions are kept in this browser, and in your account if you sign in and choose cloud storage.
+- **The About page's source link and the footer's License link now go straight to github.com/spert-suite/spert-ahp,** where the code lives (they went through a redirect).
+
+### Internal — the frame and its guards
+- **The frame’s stylesheet is re-vendored at version 4** (md5 `7f8e40a37b008027e06123fe13e1b2f8`), byte for byte from the suite’s canonical copy; its only change is the About page’s `.sf-about` classes. The md5 pin in `frame-stylesheet.test.ts` moves with it.
+- **`AboutPage.tsx` is rebuilt on the frame’s `.sf-about`** (contract §3 About page, §7 About): six sections, its guide copied from the Help Center’s `help.ts`, and no utility classes but the four on What’s new, a button because AHP has no page addresses, which give it the links’ look from the stylesheet’s own tokens. `copyrightYear()` (`copyrightYear.ts`) is the one source of the © year for the footer and About.
+- **`LICENSE` line 4 names `https://github.com/spert-suite/spert-ahp`,** the one line each repo’s LICENSE may change; `license-conformance.test.ts` follows it, and the licence body’s hash is unchanged.
+- **Checked with the suite’s frame-check** against a local production build: no unregistered deviations on Decisions, Decisions on a first visit, Compare and, for the first time, About, at every size and theme, classic scrollbars included; ten further screens read 0. Tests: 61 files and 592 tests before, 62 and 604 after.
+
+### Notes
+- No dependency, Firestore or legal-document change apart from LICENSE line 4. Exports carry the app version, now 0.21.0.
+
 ## v0.20.0 (November 26, 2026)
 
 An empty Decisions page now welcomes you, the same way every SPERT® app does, and if the app itself ever fails it now says so and offers a way back, instead of leaving a blank page.
