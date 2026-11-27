@@ -86,6 +86,6 @@ describe('projects collection — query shape required by the Firestore list rul
 
     expect(collectionMock).toHaveBeenCalledWith({ __mock: true }, 'spertahp_projects');
     // query(collection, where) — a bare query(collection) is the LIST-1 shape.
-    expect(queryMock.mock.calls[0].length).toBeGreaterThan(1);
+    expect(queryMock.mock.calls[0]!.length).toBeGreaterThan(1);
   });
 });

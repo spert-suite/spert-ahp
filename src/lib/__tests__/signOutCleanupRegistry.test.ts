@@ -87,9 +87,9 @@ describe('signOutCleanupRegistry', () => {
 
   it('returns a deregister handle that removes only the specified callback', async () => {
     const invoked: string[] = [];
-    registerSignOutCleanup(() => invoked.push('a'));
-    const deregisterB = registerSignOutCleanup(() => invoked.push('b'));
-    registerSignOutCleanup(() => invoked.push('c'));
+    registerSignOutCleanup(() => { invoked.push('a'); });
+    const deregisterB = registerSignOutCleanup(() => { invoked.push('b'); });
+    registerSignOutCleanup(() => { invoked.push('c'); });
 
     deregisterB();
 
@@ -100,7 +100,7 @@ describe('signOutCleanupRegistry', () => {
 
   it('deregister handle is safe to call twice (idempotent)', async () => {
     const invoked: string[] = [];
-    const deregister = registerSignOutCleanup(() => invoked.push('once'));
+    const deregister = registerSignOutCleanup(() => { invoked.push('once'); });
 
     deregister();
     deregister();
@@ -112,9 +112,9 @@ describe('signOutCleanupRegistry', () => {
 
   it('deregister handle does not affect callbacks registered after it', async () => {
     const invoked: string[] = [];
-    const deregisterA = registerSignOutCleanup(() => invoked.push('a'));
+    const deregisterA = registerSignOutCleanup(() => { invoked.push('a'); });
     deregisterA();
-    registerSignOutCleanup(() => invoked.push('b'));
+    registerSignOutCleanup(() => { invoked.push('b'); });
 
     await runSignOutCleanup();
 

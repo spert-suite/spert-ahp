@@ -65,7 +65,7 @@ describe('PairwiseComparisonLayer with a stored completionTier', () => {
     setComparison: () => {}, removeComparison: () => {},
   };
   const renderLayer = (tier: unknown) => render(
-    <PairwiseComparisonLayer items={items} tier={tier as 4} matrix={matrix as never} banner={null} isOwner mode="criteria" criterionLabel="" />,
+    <PairwiseComparisonLayer items={items} tier={tier as 4} matrix={matrix as never} banner={null} isOwner mode="importance" criterionLabel="" />,
   );
 
   it('crashed on the raw value, and renders on the value the guard produces', () => {

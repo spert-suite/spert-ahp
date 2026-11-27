@@ -18,7 +18,7 @@ import { describe, it, expect } from 'vitest';
  * It sits in `src/__tests__/`, which `tsc -b` never compiles (as `copyright-headers.test.ts` explains), so it was
  * type-checked standalone under `--strict --noUncheckedIndexedAccess --noUnusedLocals --noUnusedParameters`.
  */
-const PINNED = '69146fd77679c71e03d2f06cfea96cf1';
+const PINNED = 'b00d0759ec0a0a4d2db6ba10b16678f0'; // v3 (v0.20.0): adds the Welcome panel, `.sf-empty`
 const SRC = join(process.cwd(), 'src');
 const VENDORED = join(SRC, 'styles', 'spert-frame.css');
 const INDEX_CSS = join(SRC, 'index.css');

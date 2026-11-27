@@ -1,6 +1,6 @@
 {
   "name": "spert-ahp",
-  "version": "0.19.1",
+  "version": "0.20.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "typecheck:tests": "tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

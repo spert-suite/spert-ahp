@@ -58,7 +58,7 @@ function expectPage(h1: string, current: string | null) {
 describe('the frame, page by page (FRAME26)', () => {
   it('with no decision open: Decisions, Decision, Compare, Results, Settings, About, then the changelog', async () => {
     render(<TestProviders><App /></TestProviders>);
-    await screen.findByText(/No saved decisions yet/);
+    await screen.findByText(/^Create a decision to name your goal/);
     expectPage('Decisions', 'Decisions');
     go('Decision');
     expectPage('No decision open', 'Decision');
@@ -76,7 +76,7 @@ describe('the frame, page by page (FRAME26)', () => {
 
   it('with a decision open: its name is the h1 on Decision, Compare, Results and Manage', async () => {
     render(<TestProviders><App /></TestProviders>);
-    await screen.findByText(/No saved decisions yet/);
+    await screen.findByText(/^Create a decision to name your goal/);
     fireEvent.click(screen.getByRole('button', { name: 'New Decision' }));
     await waitFor(() => expect(within(navRow()).queryByRole('button', { name: 'Manage' })).not.toBeNull());
     await waitFor(() => expectPage('Untitled decision', 'Decision'));
@@ -91,14 +91,14 @@ describe('the frame, page by page (FRAME26)', () => {
   });
 
   // Contract §7 "Empty collection" (frame v2): the panel that stands in for the tile grid carries data-sf="empty", so
-  // frame-check measures it on a first visit instead of reporting tiles.found; it never shows beside a grid. Its look
-  // is an open decision, so only the hook and its place are held here.
+  // frame-check measures it on a first visit instead of reporting tiles.found; it never shows beside a grid. Since
+  // v0.20.0 it is the Welcome panel (`DashboardPanel.welcome.test.tsx` holds its markup); the hook and place are here.
   it('hooks the empty Decisions panel data-sf="empty" in place of the tile grid, and drops it once a decision exists', async () => {
     render(<TestProviders><App /></TestProviders>);
-    await screen.findByText(/No saved decisions yet/);
+    await screen.findByText(/^Create a decision to name your goal/);
     const empty = Array.from(document.querySelectorAll('[data-sf="empty"]'));
     expect(empty, 'exactly one empty panel').toHaveLength(1);
-    expect(empty[0]!.textContent).toMatch(/No saved decisions yet/);
+    expect(empty[0]!.textContent).toMatch(/^Welcome to SPERT® AHP/);
     expect(main().contains(empty[0]!), 'inside main').toBe(true);
     const row = document.querySelector('[data-sf="headrow"]') as HTMLElement;
     expect(row.compareDocumentPosition(empty[0]!) & Node.DOCUMENT_POSITION_FOLLOWING, 'after the heading row').toBeTruthy();
@@ -113,7 +113,7 @@ describe('the frame, page by page (FRAME26)', () => {
 
   it('puts the app-wide notices in the notices slot, before main, with the frame’s dismiss buttons', async () => {
     render(<TestProviders><App /></TestProviders>);
-    await screen.findByText(/No saved decisions yet/);
+    await screen.findByText(/^Create a decision to name your goal/);
     const slot = document.querySelector('[data-sf="notices"]') as HTMLElement;
     expect(slot.compareDocumentPosition(main()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     const gotIt = within(slot).getAllByRole('button', { name: 'Got it' });
@@ -124,7 +124,7 @@ describe('the frame, page by page (FRAME26)', () => {
 
   it('starts with the skip link, which targets main', async () => {
     render(<TestProviders><App /></TestProviders>);
-    await screen.findByText(/No saved decisions yet/);
+    await screen.findByText(/^Create a decision to name your goal/);
     const skip = screen.getByRole('link', { name: 'Skip to main content' });
     expect(skip.getAttribute('href')).toBe(`#${main().id}`);
     const app = document.querySelector('[data-sf="app"]') as HTMLElement;
