@@ -35,6 +35,10 @@ export default function SensitivityChart({ sweep, crossovers, alternatives, crit
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="t"
+            // A number line, not a category axis (v0.21.1). As a category axis of the 101 sweep points, a crossover's
+            // exact weight matched no category, so its ReferenceDot was never drawn.
+            type="number"
+            domain={[0, 1]}
             tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`}
             label={{ value: `Weight of ${criterionName}`, position: 'insideBottom', offset: -5, fontSize: 12 }}
           />

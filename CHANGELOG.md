@@ -1,5 +1,18 @@
 # SPERT® AHP — Changelog
 
+## v0.21.1 (November 28, 2026)
+
+The sensitivity chart on the Results tab now marks every crossover: a red dot where two alternatives' lines cross, at the weight where they swap places.
+
+### Fixed
+- **The sensitivity chart's crossover markers now appear.** The chart treated its horizontal axis, the factor's weight, as 101 separate labels (0%, 1%, … 100%) instead of a number line, so a marker could be drawn only when a crossover fell exactly on one of them, which in practice it never did. The axis is now a number line from 0% to 100%, labelled every 25%, and each crossover is marked where it falls. The v0.18.48 note listed this for a separate fix.
+
+### Internal — tests
+- **`SensitivityChart.crossovers.test.tsx`** renders the chart and checks that each crossover gets one marker, at the right place. It failed on v0.21.0's chart and passes now. Tests: 62 files and 604 tests before, 63 and 609 after.
+
+### Notes
+- No dependency, Firestore or legal-document change. Exports carry the app version, now 0.21.1.
+
 ## v0.21.0 (November 27, 2026)
 
 ### Changed
